@@ -1,7 +1,7 @@
 import mongoose, { model } from "mongoose";
 
-const docDeptSchema= new mongoose.Schema(
-   {
+const deptSchema= new mongoose.Schema(
+    {
     dept_name: {
       type: String,
       required: true,
@@ -12,5 +12,5 @@ const docDeptSchema= new mongoose.Schema(
     timestamps: true
   }
 );
-const docDeptModel= mongoose.model("DocDept",docDeptSchema)
-export default docDeptModel;
+const deptModel= mongoose.model("Department",deptSchema)
+export default deptModel;

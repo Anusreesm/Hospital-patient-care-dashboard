@@ -22,9 +22,9 @@ const appointmentSchema=new mongoose.Schema(
       ref: "HospitalStaff",
       required: true
     },
-    doc_dept_id: {
+    specialization_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "DocDept",
+      ref: "Specialization",
       required: true
     },
     date: {

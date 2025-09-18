@@ -11,6 +11,11 @@ const patientSchema=new mongoose.Schema(
       ref: "PatientDetails",
       required: true,
     },
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    }
   },
   {
     timestamps: true, 

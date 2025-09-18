@@ -1,15 +1,15 @@
 import mongoose, { model } from "mongoose";
 
-const hospitalStaffSchema= new mongoose.Schema(
-   {
+const hospitalStaffSchema = new mongoose.Schema(
+  {
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true
     },
-    staff_id: {
+    dept_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Staff",
+      ref: "Department",
       required: true
     },
     name: {
@@ -22,6 +22,7 @@ const hospitalStaffSchema= new mongoose.Schema(
       required: true,
       trim: true
     },
+    
     medical_license: {
       type: String,
       required: true
@@ -30,19 +31,16 @@ const hospitalStaffSchema= new mongoose.Schema(
       type: Number,
       required: true
     },
-    doc_dept_id: {
+    specialization_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "DocDept",
+      ref: "Specialization",
       required: true
     },
-    specialization: {
-      type: String,
-      required: true
-    }
+
   },
   {
     timestamps: true
   }
 );
-const hospitalStaffModel= mongoose.model("HospitalStaff",hospitalStaffSchema)
+const hospitalStaffModel = mongoose.model("HospitalStaff", hospitalStaffSchema)
 export default hospitalStaffModel;

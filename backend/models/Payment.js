@@ -1,7 +1,7 @@
 import mongoose, { model } from "mongoose";
 
-const paymentSchema=new mongoose.Schema(
-    {
+const paymentSchema = new mongoose.Schema(
+  {
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -14,7 +14,12 @@ const paymentSchema=new mongoose.Schema(
     },
     hosp_staff_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "HospitalStaff", 
+      ref: "HospitalStaff",
+      required: true
+    },
+    appointment_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Appointment",
       required: true
     },
     amount: {
@@ -34,9 +39,13 @@ const paymentSchema=new mongoose.Schema(
     description: {
       type: String,
       trim: true
+    },
+     transactionId: {
+      type: String,
+      trim: true
     }
   },
   { timestamps: true }
 );
-const paymentModel= mongoose.model('Payment',paymentSchema) 
+const paymentModel = mongoose.model('Payment', paymentSchema)
 export default paymentModel
