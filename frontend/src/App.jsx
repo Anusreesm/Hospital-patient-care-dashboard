@@ -1,34 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import './App.css'
+import Login from './Pages/Auth/Login'
+import RegisterPatient from './Pages/Auth/Register'
+import AdminDashboard from './Pages/Admin/AdminDashboard'
+import StaffDashboard from './Pages/Staff/StaffDashboard'
+import DoctorDashboard from './Pages/Doctor/DoctorDashboard'
+import PatientDashboard from './Pages/Patient/PatientDashboard'
+import ProtectedRoutes from './Routes/ProtectedRoutes'
+
+const App = () => {
+
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<RegisterPatient />} />
+      </Routes>
+
+      {/* Admin dashboard  */}
+      <Routes>
+        <Route path="/admin" element={
+          <ProtectedRoutes allowedRoles={['admin']}>
+            <AdminDashboard />
+          </ProtectedRoutes>
+        } />
+      </Routes>
+
+      {/* Staff dashboard */}
+      <Routes>
+        <ProtectedRoutes allowedRoles={['admin','staff']}>
+          <Route path="/staff" element={<StaffDashboard />} />
+        </ProtectedRoutes>
+      </Routes>
+
+      {/* Doctor dashboard */}
+      <Routes>
+        <ProtectedRoutes allowedRoles={['admin','doctor']}>
+          <Route path="/doctor" element={<DoctorDashboard />} />
+        </ProtectedRoutes>
+      </Routes>
+
+      {/* patient dashboard */}
+      <Routes>
+        <ProtectedRoutes allowedRoles={['admin','patient']}>
+          <Route path="/patient" element={<PatientDashboard />} />
+        </ProtectedRoutes>
+      </Routes>
+    </BrowserRouter>
+
+
   )
 }
 
