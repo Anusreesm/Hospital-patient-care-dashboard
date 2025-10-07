@@ -1,53 +1,84 @@
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
 import Login from './Pages/Auth/Login'
-import RegisterPatient from './Pages/Auth/Register'
 import AdminDashboard from './Pages/Admin/AdminDashboard'
 import StaffDashboard from './Pages/Staff/StaffDashboard'
 import DoctorDashboard from './Pages/Doctor/DoctorDashboard'
 import PatientDashboard from './Pages/Patient/PatientDashboard'
 import ProtectedRoutes from './Routes/ProtectedRoutes'
+import { useAuth } from './Context/AuthContext'
+import HospStaffReg from './Pages/Admin/hospStaffRegister'
 
 const App = () => {
-
-
+  const {token,userRole} =useAuth();
   return (
 
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<RegisterPatient />} />
-      </Routes>
+       {/* if token exist redirect to their dashboard else go back to login */}
+           <Route path="/login" element={
+          token?(
+            userRole ==='admin'?(
+              <Navigate to='/admin'/>
+            ): userRole ==='staff' ?(
+              <Navigate to ='/staff'/>
+            ): userRole ==='doctor' ?(
+              <Navigate to ='/doctor'/>
+            ): userRole ==='patient'?(
+              <Navigate to ='/patient'/>
+            ):(
+              <Login/>
+            )
+
+
+          ):(
+          <Login />
+          )
+        } />
+      
+
 
       {/* Admin dashboard  */}
-      <Routes>
+    
         <Route path="/admin" element={
-          <ProtectedRoutes allowedRoles={['admin']}>
+          <ProtectedRoutes allowedRoles={['admin']}  >
             <AdminDashboard />
+            <HospStaffReg/>
           </ProtectedRoutes>
         } />
-      </Routes>
+      
 
       {/* Staff dashboard */}
-      <Routes>
-        <ProtectedRoutes allowedRoles={['admin','staff']}>
-          <Route path="/staff" element={<StaffDashboard />} />
-        </ProtectedRoutes>
-      </Routes>
+     
+
+        <Route path="/staff" element={
+          <ProtectedRoutes allowedRoles={['admin', 'staff']}>
+            <StaffDashboard />
+          </ProtectedRoutes>
+        } />
+
 
       {/* Doctor dashboard */}
-      <Routes>
-        <ProtectedRoutes allowedRoles={['admin','doctor']}>
-          <Route path="/doctor" element={<DoctorDashboard />} />
-        </ProtectedRoutes>
-      </Routes>
+     
+
+        <Route path="/doctor" element={
+          <ProtectedRoutes allowedRoles={['admin', 'doctor']}>
+            <DoctorDashboard />
+          </ProtectedRoutes>
+        } />
+
+    
 
       {/* patient dashboard */}
-      <Routes>
-        <ProtectedRoutes allowedRoles={['admin','patient']}>
-          <Route path="/patient" element={<PatientDashboard />} />
-        </ProtectedRoutes>
+     
+
+        <Route path="/patient" element={
+          <ProtectedRoutes allowedRoles={['admin', 'patient']}>
+            <PatientDashboard />
+          </ProtectedRoutes>
+        } />
+
       </Routes>
     </BrowserRouter>
 
