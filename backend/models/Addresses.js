@@ -19,7 +19,8 @@ const addressSchema=new mongoose.Schema(
     },
     pincode: {
       type: String,
-      required: true
+      required: true,
+      match: /^[0-9]{6}$/ // for 6-digit Indian pincodes
     }
   },
   {

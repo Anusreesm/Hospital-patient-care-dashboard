@@ -2,7 +2,7 @@ import mongoose, { model } from "mongoose";
 
 const specializationSchema= new mongoose.Schema(
    {
-    specialization: {
+    spec_name: {
       type: String,
       required: true,
       trim: true

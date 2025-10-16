@@ -1,6 +1,6 @@
 import mongoose, { model } from "mongoose";
 
-const bloodBankReqSchema=new mongoose.Schema(
+const bloodBankReqSchema = new mongoose.Schema(
   {
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -18,10 +18,23 @@ const bloodBankReqSchema=new mongoose.Schema(
     },
     status: {
       type: String,
-      required: true
+      required: true,
+      enum: ["pending", "rejected", "approved"], 
+      default: "pending"
+    },
+    priority: {
+      type: String,
+      enum: ["low", "medium", "high"], 
+      default: "medium"
+    },
+    fulfilled_date: { 
+      type: Date 
+    },
+    reason:{
+      type: String
     }
   },
   { timestamps: true }
 );
-const bloodBankReqModel= mongoose.model('BloodBankReq',bloodBankReqSchema) 
+const bloodBankReqModel = mongoose.model('BloodBankReq', bloodBankReqSchema)
 export default bloodBankReqModel

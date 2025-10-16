@@ -1,11 +1,14 @@
 import express from "express";
-import app from "../app.js";
-import { changeUserPassword, changeUserStatus, deleteUser, getCurrentUser, getUserById, getUsers, loginUser, registerUser, updateUser } from "../controllers/UserController.js";
+import { changeUserPassword, changeUserStatus, deleteUser, forgotUserPassword, getUserById, getUsers, loginUser, registerUser, updateUser } from "../controllers/userController.js";
+
+
+
 
 
 const UserRouter=express.Router()
 // @route   POST/api/users/register
 // @desc    Register new user
+//authorize("admin", "doctor", "staff", "patient")
 UserRouter.post("/register", registerUser)
 
 // @route   POST/api/users/login
@@ -29,15 +32,17 @@ UserRouter.put("/update/:id", updateUser)
 UserRouter.delete("/delete/:id", deleteUser)
 
 // @route   PATCH /api/users/status/:id
-// @desc    Change user active/inactive status
+// @desc    Change user active/deactivated status
 UserRouter.patch("/status/:id", changeUserStatus);
 
 // @route   PATCH /api/users/password/:id
-// @desc    Change user password
+// @desc    Change user password-needs both oldPassword and newPassword
 UserRouter.patch("/password/:id", changeUserPassword);
 
-// @route   GET /api/users/me
-// @desc    Get current logged-in user profile
-UserRouter.get("/me", getCurrentUser);
+// @route   PATCH /api/users/forgotPassword/:id
+// @desc    Change user password-only needs newPassword, used in forgot password flow
+UserRouter.patch("/forgotPassword/:id", forgotUserPassword);
+
+
 
 export default UserRouter

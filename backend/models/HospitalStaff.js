@@ -18,23 +18,22 @@ const hospitalStaffSchema = new mongoose.Schema(
       trim: true
     },
     phone: {
-      type: Number,
+      type: String,
       required: true,
-      trim: true
+      trim: true,
     },
-    
+
     medical_license: {
       type: String,
-      required: true
     },
     exp_years: {
       type: Number,
-      required: true
+      required: true,
+
     },
     specialization_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Specialization",
-      required: true
+      ref: "Specialization"
     },
 
   },

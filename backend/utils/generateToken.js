@@ -1,10 +1,12 @@
 import jwt from "jsonwebtoken"
-
-const generateToken=(id,role) => {
+import dotenv from "dotenv";
+dotenv.config({ path: './.env' })
+const generateToken = (id, role,name) => {
     return jwt.sign(
-        {id,role},
-        process.env.SECRET_KEY || "secret123",
-        { expiresIn: "1h"}
-);
+        { id, role, name },
+        process.env.SECRET_KEY,
+        { expiresIn: "1h" }
+    );
 };
+console.log("secret_key:", process.env.SECRET_KEY)
 export default generateToken

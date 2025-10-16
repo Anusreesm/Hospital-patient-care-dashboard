@@ -5,8 +5,10 @@ const bloodBankSchema=new mongoose.Schema(
     blood_type: {
       type: String,
       enum: ["A+","A-","B+","B-","AB+","AB-","O+", "O-"],
-      required: true
+      required: true,
+      unique: true 
     },
+    // ml
     available_unit: {
       type: Number,
       required: true

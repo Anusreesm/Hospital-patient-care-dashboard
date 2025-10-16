@@ -5,7 +5,7 @@ const deptSchema= new mongoose.Schema(
     dept_name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     }
   },
   {

@@ -14,7 +14,8 @@ const regSchema= new mongoose.Schema(
     },
     registration_date: {
       type: Date,
-      default: Date.now
+      default: Date.now,
+      required:true
     },
     discharge_date: {
       type: Date
@@ -28,7 +29,7 @@ const regSchema= new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["active", "discharged", "pending"],
+      enum: ["active", "discharged"],
       default: "active"
     }
   },

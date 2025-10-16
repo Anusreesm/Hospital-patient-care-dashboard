@@ -15,6 +15,8 @@ import SpecializationMasterRouter from "./routes/specializationMasterRoutes.js"
 import DeptMasterRouter from "./routes/deptMasterRoutes.js"
 import BloodBankMasterRouter from "./routes/bloodBankMasterRoutes.js"
 
+import PatientAddressRouter from "./routes/addressesRoutes.js"
+
 const app = express()
 // middlewares
 app.use(express.json())
@@ -22,13 +24,14 @@ app.use(cors())
 
 app.use('/api/users', UserRouter)
 app.use('/api/patient', PatientRouter)
+app.use('/api/patientAddress', PatientAddressRouter)
 app.use('/api/registration', RegistrationRouter)
 app.use('/api/hospStaff', HospitalStaffRouter)
-app.use('/api/deptMater', DeptMasterRouter)
+app.use('/api/deptMaster', DeptMasterRouter)
 app.use('/api/specializationMaster', SpecializationMasterRouter)
 app.use('/api/appointment', AppointmentRouter )
 app.use('/api/payment', PaymentRouter )
-app.use('/api/bloodBankMaster', BloodBankMasterRouter )
+app.use('/api/bloodBank', BloodBankMasterRouter )
 app.use('/api/bloodBankReq', BloodBankReqRouter )
 app.use('/api/notification', NotificationRouter )
 app.use('/api/feedback', FeedbackRouter )
