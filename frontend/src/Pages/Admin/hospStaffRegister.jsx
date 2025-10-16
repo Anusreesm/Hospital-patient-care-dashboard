@@ -6,6 +6,8 @@ import Select from "../../Components/Forms/Select"
 import { getAllDepartments } from "../../api/DeptMasterApi"
 import { getAllSpecializations } from "../../api/SpecializationMasterApi"
 import { RegisterHospStaff as registerStaffApi } from "../../api/HospStaff"
+import Sidebar from "../../Components/Layouts/Sidebar"
+import Navbar from "../../Components/Layouts/Navbar"
 
 const HospStaffReg = () => {
     const [departments, setDepartments] = useState([]);
@@ -113,9 +115,14 @@ const HospStaffReg = () => {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="flex flex-col items-center justify-center p-6 w-full">
-                <form className="rounded-lg border bg-gray-100 text-gray-900 shadow-sm w-full max-w-4xl p-8 " onSubmit={handleSubmit} >
+       <>
+      <div className="flex h-screen">
+      <Sidebar/>
+       <div className="flex-1 flex flex-col">
+        <Navbar/>
+        <div className="flex-1 flex flex-col items-center justify-center ">
+            <div className="w-full max-w-4xl p-3">
+                <form className="rounded-lg border  text-gray-900 shadow-sm w-full max-w-4xl p-8 " onSubmit={handleSubmit} >
                     <div className="mb-6 flex flex-col gap-2 items-center">
                         <p className="text-2xl font-semibold text-black">Create New User</p>
                         <span className="text-gray-400 text-sm">Add a new user to hospital system</span>
@@ -232,6 +239,9 @@ const HospStaffReg = () => {
                 </form>
             </div>
         </div>
+        </div>
+        </div>
+       </>
     )
 }
 

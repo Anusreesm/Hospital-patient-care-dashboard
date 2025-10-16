@@ -22,7 +22,8 @@ export const AuthProvider = ({ children }) => {
         {
             token: storedToken || null,
             userRole: decoded?.role || null,
-            userId: decoded?.id || null
+            userId: decoded?.id || null,
+            userName: decoded?.name || null
         }
     );
     useEffect(() => {
@@ -31,7 +32,8 @@ export const AuthProvider = ({ children }) => {
             setAuth({
                 token: null,
                 userRole: null,
-                userId: null
+                userId: null,
+                userName:null
             })
         }
     }, [storedToken, decoded]); //  Add dependencies
@@ -43,10 +45,11 @@ export const AuthProvider = ({ children }) => {
         const decodeToken = token ? jwtDecode(token) : null
         const userRole = decodeToken?.role
         const userId = decodeToken?.id
+        const userName = decodeToken?.name;
         // since it contains same name as it is given in state and variable
         setAuth(
             {
-                token, userRole, userId
+                token, userRole, userId, userName
             }
         )
     }
