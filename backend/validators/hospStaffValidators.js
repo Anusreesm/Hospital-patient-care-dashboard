@@ -4,7 +4,7 @@ import { errorResponse } from "../constants/response.js";
 import userModel from "../models/User.js";
 
 export const ValidateAddHospStaff = async (req, res, next) => {
-    const { email, dept_id, name, phone, medical_license, exp_years, specialization_id } = req.body
+    let { email, dept_id, name, phone, medical_license, exp_years, specialization_id } = req.body
     // required field checks
     if (!email || !dept_id || !name || !phone) {
         return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.HOSP_STAFF.REQUIRED_FIELDS);

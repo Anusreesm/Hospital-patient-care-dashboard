@@ -2,10 +2,10 @@
 import { STATUS } from "../constants/httpStatus.js"
 import { MESSAGES } from "../constants/messages.js"
 
-// @route   POST/api/feedback/create
-// @desc    add Feedback 
+// @route   POST/api/notification/create
+// @desc    add Notification 
 // @access public
-export const createFeedback = (req, res) => {
+export const createNotification = (req, res) => {
     try {
 
     }
@@ -15,10 +15,10 @@ export const createFeedback = (req, res) => {
     }
 }
 
-// @route   GET/api/feedback/
-// @desc   GET all Feedback 
+// @route   GET/api/notification/
+// @desc   GET all Notification 
 // @access public
-export const getAllFeedback = (req, res) => {
+export const getAllNotification = (req, res) => {
     try {
 
     }
@@ -28,11 +28,11 @@ export const getAllFeedback = (req, res) => {
     }
 }
 
-// @route   GET/api/feedback/:id
-// @desc   GET single  feedback by id
+// @route   GET/api/notification/:id
+// @desc   GET single  Notification by id
 // @access public
 
-export const getFeedbackById = (req, res) => {
+export const getNotificationById = (req, res) => {
     try {
 
     }
@@ -41,10 +41,10 @@ export const getFeedbackById = (req, res) => {
         return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 }
-// @route   PUT/api/feedback/update/:id
-// @desc   update Feedback 
+// @route   PUT/api/notification/update/:id
+// @desc   update Notification 
 // @access public
-export const updateFeedback = (req, res) => {
+export const updateNotification = (req, res) => {
     try {
 
     }
@@ -54,10 +54,10 @@ export const updateFeedback = (req, res) => {
     }
 }
 
-// @route   DELETE/api/feedback/delete/:id
-// @desc   delete Feedback
+// @route   DELETE/api/notification/delete/:id
+// @desc   delete Notification
 // @access public
-export const deleteFeedback = (req, res) => {
+export const deleteNotification = (req, res) => {
     try {
 
     }

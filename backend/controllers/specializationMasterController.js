@@ -44,7 +44,7 @@ export const createSpecialization = async (req, res) => {
 export const getSpecialization = async (req, res) => {
     try {
         // To find All specialization
-        const spec = await specializationModel.find()
+        const spec = await specializationModel.find({ isActive: true }).sort({ createdAt: -1 })
         return successResponse(
             res,
             STATUS.OK,
@@ -141,11 +141,16 @@ export const deleteSpecialization = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.SPECIALIZATION.INVALID_SPEC_ID);
         }
+         const spec = await specializationModel.findById(id);
+                if (!spec) {
+                    return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.SPECIALIZATION.SPEC_NOT_FOUND);
+                }
         // to delete
-        const spec = await specializationModel.findByIdAndDelete(id)
-        if (!spec) {
-            return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.SPECIALIZATION.SPEC_NOT_FOUND);
+         if (spec.isActive === false) {
+            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.SPECIALIZATION.SPEC_INACTIVE);
         }
+        spec.isActive = false;
+        await spec.save();
         return successResponse(
             res,
             STATUS.OK,

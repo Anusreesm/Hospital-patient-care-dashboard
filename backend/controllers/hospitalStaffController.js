@@ -9,24 +9,31 @@ import { staffByIdQuery, staffQuery } from "../services/hospStaffService.js"
 import userModel from "../models/User.js"
 import crypto from "crypto";
 import bcrypt from "bcrypt"
+
+
+
+import SendMail from "../utils/emails/sendMail.js"
 import createUserWithTempPw from "../utils/createUserWithTempPw.js"
-import SendMail from "../utils/sendMail.js"
-import EmailTempForTempPw from "../utils/emailTemplatesForTempPw.js"
+import EmailTempForTempPw from "../utils/emails/templates/emailTemplatesForTempPw.js"
 
 // @route   POST/api/hospStaff/register
 // @desc    create new staff
 // @access  Admin
 export const registerhospStaff = async (req, res) => {
     try {
-        const { email, dept_id, name, phone, medical_license, exp_years, specialization_id } = req.body
+        let { email, dept_id, name, phone, medical_license, exp_years, specialization_id } = req.body
         // Fetch the department from DB
         const department = await deptModel.findById(dept_id);
         if (!department) {
             return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.DEPARTMENT.INVALID_DEPT_ID)
         }
+          //  phone number includes +91 
+        if (phone && !phone.startsWith("+91")) {
+            phone = `+91${phone.replace(/^\+?91/, "").trim()}`;
+        }
         //  Determine role based on department  (case-insensitive) 
         let role = "staff";
-        if (/^doctor$/i.test(department.dept_name)) {
+       if (/doctor/i.test(department.dept_name)) {
             role = "doctor";
             // Doctor-specific validation
             if (!specialization_id || !medical_license) {
@@ -41,14 +48,16 @@ export const registerhospStaff = async (req, res) => {
             user_id: newUser._id,
             dept_id,
             name: name.trim(),
-            phone: req.phoneStr,
+            phone,
             medical_license: medical_license || null,          // empty string to null
             exp_years: exp_years === "" ? null : exp_years,   // only convert "" to null
-            specialization_id: specialization_id || null      // empty string to null
+            specialization_id: specialization_id || null,    // empty string to null
+            isActive: true,
         });
+console.log("Sending email to:", email, "with name:", name);
 
         // Send temp password email
-        const emailContent = EmailTempForTempPw({ toEmail: email, tempPassword, role });
+        const emailContent = EmailTempForTempPw({ toEmail: email, tempPassword, role,name });
         // sending email and displaying email is on emailcontent
         await SendMail(email, emailContent);
 
@@ -136,7 +145,7 @@ export const updatehospStaff = async (req, res) => {
         }
         // Find hospital staff record first
         const staff = await hospitalStaffModel.findById(id);
-        if (!staff) {
+        if (!staff || !staff.isActive) {
             return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.HOSP_STAFF.HOSP_STAFF_NOT_FOUND);
         }
 
@@ -153,7 +162,7 @@ export const updatehospStaff = async (req, res) => {
         if (medical_license !== undefined) updateHospStaff.medical_license = checkMedicalLicense;
         if (exp_years !== undefined) updateHospStaff.exp_years = exp_years;
         if (specialization_id !== undefined) updateHospStaff.specialization_id = checkSpecializationId;
-        if (email) updateHospStaff.email = email.toLowerCase()
+
 
         // Check if at least one field is provided
         if (Object.keys(updateHospStaff).length === 0) {
@@ -174,6 +183,8 @@ export const updatehospStaff = async (req, res) => {
         // sync to userModel
         const userUpdates = {};
         if (email) userUpdates.email = email.toLowerCase();
+        if (name) userUpdates.name = name.trim();
+        if (phone) userUpdates.phone = phone;
         if (dept_id) {
             const dept = await deptModel.findById(dept_id);
             if (dept) {
@@ -215,15 +226,19 @@ export const deletehospStaff = async (req, res) => {
             return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.HOSP_STAFF.INVALID_HOSP_STAFF_ID);
         }
         // to delete from staff
-        const staff = await hospitalStaffModel.findByIdAndDelete(id)
-        if (!staff) {
+        const staff = await hospitalStaffModel.findById(id)
+        if (!staff || !staff.isActive) {
             return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.HOSP_STAFF.HOSP_STAFF_NOT_FOUND);
         }
-
+        staff.isActive = false;
+        staff.deletedAt = new Date();
+        await staff.save();
+        
+        await userModel.findByIdAndUpdate(staff.user_id, { status: "deactivated" });
         return successResponse(
             res,
             STATUS.OK,
-            { staff },
+            { deletedStaffId: staff._id },
             MESSAGES.HOSP_STAFF.HOSP_STAFF_DELETED
         )
     }

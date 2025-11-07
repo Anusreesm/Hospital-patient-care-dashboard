@@ -1,21 +1,27 @@
-import mongoose, { model } from "mongoose";
 
-const appointmentSchema=new mongoose.Schema(
-   {
+import mongoose from "mongoose";
+
+const appointmentSchema = new mongoose.Schema(
+  {
     payment_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Payment",
-      required: true
+      default: null
     },
     reg_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Registration",
+     
+    },
+    patient_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Patient",
       required: true
     },
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+     
     },
     hosp_staff_id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -29,7 +35,20 @@ const appointmentSchema=new mongoose.Schema(
     },
     date: {
       type: Date,
-      required: true
+      required: true,
+      get: (val) => {
+        if (!val) return val;
+        const d = new Date(val);
+        const day = String(d.getDate()).padStart(2, "0");
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+      }
+    },
+    time: {
+      type: String, // store as 'HH:mm'
+      required: true,
+      match: /^([0-1]\d|2[0-3]):([0-5]\d)$/, // 24-hour format validation
     },
     description: {
       type: String,
@@ -38,9 +57,19 @@ const appointmentSchema=new mongoose.Schema(
     token_no: {
       type: String,
       required: true
+    },
+    status: {
+      type: String,
+      enum: ["scheduled", "confirmed", "completed","cancelled","missed"],
+      default: "scheduled" 
+    },
+    amount:{
+       type: Number,
+  required: false,
+  default: 0
     }
   },
   { timestamps: true }
 );
-const appointmentModel= mongoose.model('Appointment',appointmentSchema) 
+const appointmentModel = mongoose.model('Appointment', appointmentSchema)
 export default appointmentModel

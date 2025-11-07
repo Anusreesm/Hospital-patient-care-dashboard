@@ -5,6 +5,7 @@ import { errorResponse, successResponse } from "../constants/response.js"
 import userModel from "../models/User.js"
 import bcrypt from "bcrypt"
 import generateToken from "../utils/generateToken.js"
+import hospitalStaffModel from "../models/HospitalStaff.js";
 
 // @desc Register new patient
 // @route POST/api/users/register
@@ -23,13 +24,13 @@ export const registerUser = async (req, res) => {
         const newUser = await userModel.create({
             email,
             password: hashedPassword,
-             name,
-            role: "patient",
+            name,
+            role: "admin",
             // hardcoded patient
 
         });
         // to generate token
-        const token = generateToken(newUser._id, newUser.role,newUser.name);
+        const token = generateToken(newUser._id, newUser.role, newUser.name);
         return successResponse(
             res,
             STATUS.OK,
@@ -37,7 +38,7 @@ export const registerUser = async (req, res) => {
                 _id: newUser._id,
                 email: newUser.email,
                 role: newUser.role,
-                name:newUser.name,
+                name: newUser.name,
                 token,
             },
             MESSAGES.USER.USER_REGISTERED
@@ -45,7 +46,7 @@ export const registerUser = async (req, res) => {
 
     }
     catch (error) {
-          console.error("Register User Error:", error); 
+        console.error("Register User Error:", error);
         return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 }
@@ -70,9 +71,12 @@ export const loginUser = async (req, res) => {
         if (user.status !== "active") {
             return errorResponse(res, STATUS.FORBIDDEN, MESSAGES.ACCOUNT_INACTIVE);
         }
+        // 4️⃣ Update last login timestamp (non-blocking)
+        user.lastLoginAt = new Date();
+        await user.save();
 
         // use utility to generate token
-        const token = generateToken(user._id, user.role,user.name)
+        const token = generateToken(user._id, user.role, user.name)
 
         return successResponse(
             res,
@@ -81,8 +85,9 @@ export const loginUser = async (req, res) => {
                 _id: user._id,
                 email: user.email,
                 role: user.role,
-                name:user.name,
+                name: user.name,
                 token,
+                lastLoginAt: user.lastLoginAt,
             },
             MESSAGES.USER.LOGIN_SUCCESS
         )
@@ -98,7 +103,7 @@ export const loginUser = async (req, res) => {
 export const getUsers = async (req, res) => {
     try {
         // To find All User
-        const users = await userModel.find()
+        const users = await userModel.find({ isActive: true })
         return successResponse(
             res,
             STATUS.OK,
@@ -159,17 +164,19 @@ export const updateUser = async (req, res) => {
         let { password, role, status, ...otherDatas } = req.body
         // temporary until i write auth
 
-         req.user = { role: "admin" };  
+        req.user = { role: "admin" };
         // Only admin can update role or status
         if (!req.user || req.user.role !== "admin") {
             role = undefined;
             status = undefined;
         }
         // final payload
-        const updatePayloads= {...otherDatas}
-        if(role) updatePayloads.role=role
-        if(status) updatePayloads.status=status
-
+        const updatePayloads = { ...otherDatas }
+        if (role) updatePayloads.role = role
+        if (status) updatePayloads.status = status
+        // if (typeof status === "string") {
+        //     updatePayloads.isActive = status.toLowerCase() === "active";
+        // }
         // to update user by id
         const user = await userModel.findByIdAndUpdate(
             id,
@@ -178,6 +185,24 @@ export const updateUser = async (req, res) => {
         )
         if (!user) {
             return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.USER.USER_NOT_FOUND);
+        }
+        // Update HospitalStaff linked to this user (if exists)
+        if (user.role === "doctor" || user.role === "staff") {
+            const updateFields = { isActive: user.isActive };
+            console.log(updateFields)
+
+            //  handle deletedAt for soft delete consistency
+            if (user.isActive === true) {
+                updateFields.deletedAt = null;
+            } else {
+                updateFields.deletedAt = new Date();
+            }
+
+            await hospitalStaffModel.findOneAndUpdate(
+                { user_id: user._id },
+                updateFields,
+                { new: true }
+            );
         }
         return successResponse(
             res,
@@ -188,7 +213,7 @@ export const updateUser = async (req, res) => {
     }
     catch (error) {
         // console.error("Error in updateUser:", error);
-         return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
+        return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 }
 
@@ -202,10 +227,14 @@ export const deleteUser = async (req, res) => {
             return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.USER.INVALID_USER_ID);
         }
         // to delete
-        const user = await userModel.findByIdAndDelete(id)
-        if (!user) {
+        const user = await userModel.findById(id)
+        if (!user || !user.isActive) {
             return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.USER.USER_NOT_FOUND);
         }
+        user.isActive = false;
+        user.deletedAt = new Date();
+        await user.save();
+
         return successResponse(
             res,
             STATUS.OK,
@@ -214,7 +243,7 @@ export const deleteUser = async (req, res) => {
         )
     }
     catch (error) {
-       return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
+        return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 }
 
@@ -239,7 +268,7 @@ export const changeUserStatus = async (req, res) => {
 
         // Toggle status
         user.status = user.status === "active" ? "deactivated" : "active";
-      await user.save({ validateBeforeSave: false });
+        await user.save({ validateBeforeSave: false });
 
 
         return successResponse(
@@ -347,10 +376,29 @@ export const forgotUserPassword = async (req, res) => {
         )
     }
     catch (error) {
-       return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
+        return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 
 }
 
 
 
+
+// @route GET/api/users/check-email/:email
+// desc Check email duplicates
+// @access admin
+export const checkEmail=async(req,res)=>{
+ try {
+     const { email } = req.params;
+    if (!email) {
+      return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.USER.INVALID_EMAIL);
+    }
+    const existingUser = await userModel.findOne({ email: email.trim().toLowerCase() });
+    if (existingUser) {
+      return errorResponse(res, STATUS.CONFLICT, MESSAGES.USER.EMAIL_EXISTS);
+    }
+    return successResponse(res, STATUS.OK, MESSAGES.USER.EMAIL_AVAILABLE );
+  } catch (error) {
+    return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR);
+  }
+};

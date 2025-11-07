@@ -49,7 +49,16 @@ const patientSchema = new mongoose.Schema(
     },
     emergency_contact: {
       type: String,
-
+    },
+  //  Soft delete fields
+    isActive: {
+      type: Boolean,
+      default: true,
+      index: true
+    },
+    deletedAt: {
+      type: Date,
+      default: null
     }
   },
   {

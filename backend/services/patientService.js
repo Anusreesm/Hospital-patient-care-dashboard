@@ -1,9 +1,10 @@
 import patientModel from "../models/Patient.js";
+import regModel from "../models/Registration.js";
 
 //  GET all patients
 
 export const getPatientsQuery = () => {
-  return patientModel.find()
+  return patientModel.find({ isActive: true })
     .populate([
       {
         path: "addresses_id",
@@ -31,3 +32,54 @@ export const getPatientsByIdQuery = (id) => {
 }
 
 // get all registrations
+export const getRegsQuery = () => {
+  return regModel.find()
+     .populate([
+      {
+        path: "user_id",
+        select: "name role status email lastLoginAt",
+      },
+      {
+        path: "patient_id",
+        select: "created_by name phone age gender",
+        populate: [
+          {
+            path: "addresses_id",
+            select: "street city state country pincode",
+          },
+          {
+            path: "bloodBank_id",
+            select: "blood_type",
+          },
+        ],
+      },
+    ]);
+};
+     
+// get registration by id
+export const getRegByIdQuery = async (id) => {
+  return await regModel
+     .findById(id)
+    .populate({
+      path: "user_id",
+      select: "name role status email lastLoginAt",
+      options: { strictPopulate: false }
+    })
+    .populate({
+      path: "patient_id",
+      select: "created_by name phone age gender",
+      populate: [
+        {
+          path: "addresses_id",
+          select: "street city state country pincode",
+        },
+        {
+          path: "bloodBank_id",
+          select: "blood_type",
+        },
+      ],
+       options: { strictPopulate: false }, //  Important: prevents errors if ref missing
+    })
+      .lean(); //makes it return plain JS object with null patient_id if missing
+};
+

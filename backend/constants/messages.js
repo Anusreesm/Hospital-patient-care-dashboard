@@ -1,3 +1,5 @@
+
+
 export const MESSAGES = {
 
   INVALID_CREDENTIALS: "Invalid credentials",
@@ -13,7 +15,11 @@ export const MESSAGES = {
     INVALID_NUMBER: "Invalid numbers",
     EMAIL_SEND:"Email sent:  ",
     EMAIL_ERROR:"Error sending email: ",
-    PINCODE_INVALID:"Pincode Invalid!"
+    PINCODE_INVALID:"Pincode Invalid!",
+    WHATSAPP:"WhatsApp message sent! SID:",
+    ERROR_WHATSAPP:"Error sending WhatsApp message:",
+    INVALID_ID:"Invalid ID",
+    
   },
 
   USER: {
@@ -32,7 +38,8 @@ export const MESSAGES = {
     BOTH_PASSWORDS_REQUIRED: "Both old and new passwords are required",
     NEW_PASSWORD_REQUIRED: "New password is required",
     INVALID_PASSWORD:"Password entered is incorrect",
-    INVALID_MAILID:"Mail Id you entered cannot find"
+    INVALID_MAILID:"Mail Id you entered cannot find",
+    EMAIL_AVAILABLE:"Email is available",
   },
    PATIENT: {
     PATIENT_CREATED: "Patient  Created Succesfully",
@@ -46,6 +53,7 @@ export const MESSAGES = {
     PATIENT_DELETED: "Patient  deleted Successfully",
     PATIENT_NAME_LONG:"patient name is too long",
     INVALID_CHARACTERS:"Invalid characters",
+     PATIENT_ID_DELETED:"Patient is deleted"
    
   },
   PATIENT_DETAILS: {
@@ -59,6 +67,7 @@ export const MESSAGES = {
     PATIENT_DETAILS_UPDATED: "Patient details is updated",
     PATIENT_DETAILS_DELETED: "Patient details deleted Successfully",
     INVALID_GENDER:"Invalid Gender",
+   
   },
   ADDRESS: {
     ADDRESS_CREATED: "Address Created Succesfully",
@@ -71,6 +80,19 @@ export const MESSAGES = {
     ADDRESS_UPDATED: "Address is updated",
     ADDRESS_DELETED: "Address deleted Successfully",
   },
+  REGISTRATION:{
+   REG_CREATED: "Registration Created Succesfully",
+    REGS_FETCHED: "Registrations fetched Successfully",
+    REG_NOT_FOUND:"Registration not found",
+    REG_FETCHED: "Registration fetched Successfully",
+    USER_PAT_DELETED: "Both user and patient have been deleted",
+    USER_DELETED:  "User has been deleted",
+    PATIENT_DELETED: "Patient has been deleted",
+     INVALID_REG_ID: "Invalid registration  ID",
+     REG_UPDATED:"Registration updated",
+     REG_DELETED: "Registration  deleted Successfully",
+     REGISTRATION_NOT_FOUND:"No active or discharged registration found for this ID.",
+  },
   DEPARTMENT: {
     DEPT_CREATED: "Department Created Succesfully",
     DEPT_EXISTS: "Department already exists",
@@ -82,6 +104,8 @@ export const MESSAGES = {
     DEPT_NAME_REQUIRED: "Department name is required!",
     DEPT_UPDATED: "Department is updated",
     DEPT_DELETED: "Department deleted Successfully",
+    DOCTOR_DEPT_CANNOT:"Doctor department cannot be deleted.",
+    DEPT_INACTIVE:"Department already inactive",
   },
   SPECIALIZATION: {
     SPEC_CREATED: "Specialization Created Succesfully",
@@ -93,6 +117,7 @@ export const MESSAGES = {
     SPEC_FETCHED: "Specialization fetched Successfully",
     SPEC_UPDATED: "Specialization is updated",
     SPEC_DELETED: "Specialization deleted Successfully",
+    SPEC_INACTIVE:"Specialization already inactive",
   },
   HOSP_STAFF: {
     HOSP_STAFF_CREATED: "Hospital staff Created Succesfully",
@@ -132,6 +157,37 @@ export const MESSAGES = {
     BLOODBANK_REQ_FETCHED: "Blood Bank Request fetched Successfully",
     BLOODBANK_REQ_UPDATED: "Blood Bank Request is updated",
     BLOODBANK_REQ_DELETED: "Blood Bank Request deleted Successfully",
-  }
-
+  },
+PAYMENT:{
+ PAYMENT_CREATED: "Payment Created Succesfully",
+    PAYMENT_EXISTS: "Payment already exists",
+    PAYMENT_NAME_REQUIRED: "Payment name is required",
+    PAYMENTS_FETCHED: "Payments fetched Successfully",
+    INVALID_PAYMENT_ID: "Invalid Payment ID",
+    PAYMENT_NOT_FOUND: "Payment not found",
+    PAYMENT_FETCHED: "Payment fetched Successfully",
+    PAYMENT_UPDATED: "Payment is updated",
+    PAYMENT_DELETED: "Payment deleted Successfully",
+    INVALID_AMT:"Invalid Amount",
+},
+APPOINTMENT:{
+ APPOINTMENT_CREATED: "Appointment Created Succesfully",
+    APPOINTMENT_EXISTS: "Appointment already exists",
+    APPOINTMENT_REQUIRED: "Appointment name is required",
+    APPOINTMENTS_FETCHED: "Appointments fetched Successfully",
+    INVALID_APPOINTMENT_ID: "Invalid Appointment ID",
+    APPOINTMENT_NOT_FOUND: "Appointment not found",
+    APPOINTMENT_FETCHED: "Appointment fetched Successfully",
+    APPOINTMENT_UPDATED: "Appointment is updated",
+    APPOINTMENT_DELETED: "Appointment deleted Successfully",
+    INVALID_AMT:"Invalid Amount Value",
+    ALREADY_EXIST:"An appointment already exists for this registration",
+    INVALID_DATE_TIME:"Invalid date or time format",
+    CANNOT_SCHEDULE_PAST: "Cannot schedule an appointment in the past",
+    TIME_FORMAT:"Time must be in HH:mm (24-hour) format",
+    STAFF_ALREADY_APPOINTMENT:"This staff member already has an appointment at this date and time",
+    SCHEDULED_CONFIRMED_APPOINTMENT:"Only scheduled,confirmed,missed or canccelled appointments can be deleted",
+    AMOUNT_REQUIRED:"Amount is required",
+    
+}   
 };

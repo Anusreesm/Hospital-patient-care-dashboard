@@ -1,4 +1,4 @@
-const EmailTempForTempPw = ({ toEmail, tempPassword, role }) => {
+const EmailTempForTempPw = ({ toEmail, tempPassword, role,name }) => {
     
   
   // Only include role in email if not 'patient'
@@ -14,7 +14,7 @@ const EmailTempForTempPw = ({ toEmail, tempPassword, role }) => {
         <div style="font-family: Arial, sans-serif; color: #333;">
           <img src="https://static.vecteezy.com/system/resources/previews/011/640/711/original/simple-modern-hospital-logo-with-healthcare-medical-template-vector.jpg" alt="MedTech" style="width:150px; display:block; margin-bottom:20px;"/>
           <h2 style="color: #0a5f7b;">Welcome to MedTech!</h2>
-          <p>Hello,</p>
+          <p>Hello ${name},</p>
           <p>Your account has been successfully created on the MedTech Dashboard.</p>
           <p><strong>Email:</strong> ${toEmail}</p>
           <p><strong>Temporary Password:</strong> ${tempPassword}</p>

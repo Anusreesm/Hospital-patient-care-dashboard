@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 import { STATUS } from "../constants/httpStatus.js";
 import { MESSAGES } from "../constants/messages.js";
 import { errorResponse } from "../constants/response.js";
-import patientDetailsModel from "../models/PatientDetails.js";
 
+import patientModel from "../models/Patient.js";
 // to add patient details
 export const validateAddPatientDetails = (req, res, next) => {
     const { addresses_id, phone, age, gender, bloodBank_id, emergency_name, emergency_contact } = req.body
@@ -37,14 +37,14 @@ export const validateUpdatePatientDetails = async (req, res, next) => {
         return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.PATIENT_DETAILS.INVALID_PATIENT_DETAILS_ID);
     }
     // Find patientdetails record first
-    const patientDetails = await patientDetailsModel.findById(id);
+    const patientDetails = await patientModel.findById(id);
     if (!patientDetails) {
         return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.PATIENT_DETAILS.PATIENT_DETAILS_NOT_FOUND);
     }
 
     const updatePatientDetails = {};
     // Check each field from the request body
-
+    if (name) updatePatientDetails.name = name;
     if (addresses_id) updatePatientDetails.addresses_id = addresses_id;
     if (phone) updatePatientDetails.phone = phone;
     if (age) updatePatientDetails.age = age;

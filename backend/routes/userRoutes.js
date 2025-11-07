@@ -1,5 +1,5 @@
 import express from "express";
-import { changeUserPassword, changeUserStatus, deleteUser, forgotUserPassword, getUserById, getUsers, loginUser, registerUser, updateUser } from "../controllers/userController.js";
+import { changeUserPassword, changeUserStatus, checkEmail, deleteUser, forgotUserPassword, getUserById, getUsers, loginUser, registerUser, updateUser } from "../controllers/userController.js";
 
 
 
@@ -42,6 +42,11 @@ UserRouter.patch("/password/:id", changeUserPassword);
 // @route   PATCH /api/users/forgotPassword/:id
 // @desc    Change user password-only needs newPassword, used in forgot password flow
 UserRouter.patch("/forgotPassword/:id", forgotUserPassword);
+
+
+// @route GET/api/users/check-email/:email
+// desc Check email duplicates
+UserRouter.get('/check-email/:email', checkEmail)
 
 
 

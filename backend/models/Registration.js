@@ -29,7 +29,7 @@ const regSchema= new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["active", "discharged"],
+      enum: ["active", "discharged","deleted"],
       default: "active"
     }
   },

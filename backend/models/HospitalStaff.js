@@ -35,7 +35,16 @@ const hospitalStaffSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Specialization"
     },
-
+    //  NEW FIELDS
+    isActive: {
+      type: Boolean,
+      default: true,
+      index: true, 
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true

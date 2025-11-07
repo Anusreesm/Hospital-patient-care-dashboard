@@ -45,7 +45,7 @@ export const createDept = async (req, res) => {
 export const getDept = async (req, res) => {
     try {
         // To find All dept
-        const dept = await deptModel.find()
+        const dept = await deptModel.find({ isActive: true }).sort({ createdAt: -1 })
         return successResponse(
             res,
             STATUS.OK,
@@ -96,7 +96,7 @@ export const updateDept = async (req, res) => {
     try {
         const { id } = req.params
         const { dept_name } = req.body;
-          // Validate ObjectId
+        // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.DEPARTMENT.INVALID_DEPT_ID);
         }
@@ -104,13 +104,16 @@ export const updateDept = async (req, res) => {
         if (!dept_name || !dept_name.trim()) {
             return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.DEPARTMENT.DEPT_NAME_REQUIRED);
         }
-        
-       // Check if department exists
+
+        // Check if department exists
         const dept = await deptModel.findById(id);
         if (!dept) {
             return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.DEPARTMENT.DEPT_NOT_FOUND);
         }
-      // Case-insensitive duplicate check (excluding current department)
+        if (dept.dept_name.toLowerCase() === "doctor") {
+            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.DEPARTMENT.DOCTOR_DEPT_CANNOT);
+        }
+        // Case-insensitive duplicate check (excluding current department)
         const existing_Dept = await deptModel.findOne({
             dept_name: { $regex: `^${dept_name.trim()}$`, $options: "i" },
             _id: { $ne: id } // exclude current dept-ignore the current department when checking for duplicates.
@@ -131,7 +134,7 @@ export const updateDept = async (req, res) => {
         );
     }
     catch (error) {
-       return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
+        return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 }
 
@@ -139,27 +142,36 @@ export const updateDept = async (req, res) => {
 // @desc  delete department
 // @route   DELETE/api/deptMaster/delete/:id
 // @access Admin/staff
-export const deleteDept = async(req, res) => {
-try{
- const { id } = req.params
+export const deleteDept = async (req, res) => {
+    try {
+        const { id } = req.params
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.DEPARTMENT.INVALID_DEPT_ID);
         }
-        // to delete
-        const dept = await deptModel.findByIdAndDelete(id)
+
+        const dept = await deptModel.findById(id);
         if (!dept) {
             return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.DEPARTMENT.DEPT_NOT_FOUND);
         }
+
+        //  Prevent deleting 'doctor' department
+        if (dept.dept_name.toLowerCase() === "doctor") {
+            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.DEPARTMENT.DOCTOR_DEPT_CANNOT);
+        }
+        if (dept.isActive === false) {
+            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.DEPARTMENT.DEPT_INACTIVE);
+        }
+        dept.isActive = false;
+        await dept.save();
         return successResponse(
             res,
             STATUS.OK,
             { dept },
             MESSAGES.DEPARTMENT.DEPT_DELETED
-        )
-}
-catch(error)
-{
-    return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
-}
+        );
+    }
+    catch (error) {
+        return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
+    }
 }
 

@@ -27,12 +27,26 @@ const userSchema = new mongoose.Schema(
             type: String,
             enum: ["active", "deactivated"],
             default: "active"
-        }
+        },
+        lastLoginAt: {
+            type: Date,
+            default: null,
+        },
 
+        // new field
+        isActive: {
+            type: Boolean,
+            default: true,
+        },
+        deletedAt: {
+            type: Date,
+            default: null,
+        },
     },
     {
-        timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
+        timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
     }
-)
+);
+
 const userModel = mongoose.model("User", userSchema)
 export default userModel
