@@ -64,6 +64,7 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider value={{
             LoginHandler,
             LogoutHandler,
+            user: { id: auth.userId, name: auth.userName, role: auth.userRole },
             ...auth
 
         }}>

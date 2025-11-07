@@ -37,3 +37,22 @@ export const deleteUser = async (id) => {
    const result = await res.json()
    return result
 }
+export const EmailCheck = async (email) => {
+  const res = await fetch(`http://localhost:3000/api/users/check-email/${email}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  const result = await res.json();
+  result.status = res.status; 
+  return result;
+};
+
+export const getUserById = async (id) => {
+   const res = await fetch(`http://localhost:3000/api/users/${id}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify()
+   })
+   const result = await res.json()
+   return result
+}

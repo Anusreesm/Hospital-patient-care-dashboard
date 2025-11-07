@@ -8,7 +8,7 @@ import DoctorDashboard from './Pages/Doctor/DoctorDashboard'
 import PatientDashboard from './Pages/Patient/PatientDashboard'
 import ProtectedRoutes from './Routes/ProtectedRoutes'
 import { useAuth } from './Context/AuthContext'
-import HospStaffReg from './Pages/Admin/hospStaffRegister'
+
 import DeptMaster from './Pages/Settings/DepartmentMaster'
 import SettingsPage from './Pages/Settings/SettingsControl'
 import SpeczMaster from './Pages/Settings/SpecializationMaster'
@@ -16,12 +16,21 @@ import SpeczMaster from './Pages/Settings/SpecializationMaster'
 import { Toaster } from 'react-hot-toast'
 import ChangeUserStatus from './Pages/Settings/ChangeUserStatus'
 
+
+
+import HospStaff from './Pages/Admin/UserManagement/HospStaffPage'
+import HospStaffReg from './Pages/Admin/UserManagement/hospStaffRegister'
+import AppointmentManagement from './Pages/Common/AppointmentManagement/Appointment'
+import AppointmentCreate from './Pages/Common/AppointmentManagement/AppointmentCreate'
+import PatientManagement from './Pages/Common/patientManagement/patientManagement'
+import PaymentManagement from './Pages/Common/PaymentManagement/Payment'
+
 const App = () => {
   const { token, userRole } = useAuth();
   return (
 
     <BrowserRouter>
-     {/* Toaster should be here */}
+      {/* Toaster should be here */}
       <Toaster
         position="top-center"
         reverseOrder={false}
@@ -50,7 +59,7 @@ const App = () => {
 
 
 
-        {/* Admin dashboard  */}
+        {/* Admin dashboard and admin only */}
 
         <Route path="/admin" element={
           <ProtectedRoutes allowedRoles={['admin']}  >
@@ -59,14 +68,14 @@ const App = () => {
         } />
 
         {/* hospital staff register */}
-        {/* <Route
+        <Route
           path="/admin/staff"
           element={
             <ProtectedRoutes allowedRoles={['admin']}>
-              <HospStaffReg />
+              <HospStaff />
             </ProtectedRoutes>
           }
-        /> */}
+        />
 
         {/* hospital staff register */}
         <Route
@@ -77,12 +86,12 @@ const App = () => {
             </ProtectedRoutes>
           }
         />
-          {/* settings */}
+        {/* settings */}
         <Route
           path="/admin/settings"
           element={
             <ProtectedRoutes allowedRoles={['admin']}>
-             <SettingsPage/>
+              <SettingsPage />
             </ProtectedRoutes>
           }
         />
@@ -92,40 +101,31 @@ const App = () => {
           path="/admin/settings/dept"
           element={
             <ProtectedRoutes allowedRoles={['admin']}>
-              <DeptMaster/>
+              <DeptMaster />
             </ProtectedRoutes>
           }
         />
 
-         {/* Specialization master */}
+        {/* Specialization master */}
         <Route
           path="/admin/settings/specz"
           element={
             <ProtectedRoutes allowedRoles={['admin']}>
-              <SpeczMaster/>
+              <SpeczMaster />
             </ProtectedRoutes>
           }
         />
 
-         
+
         {/* change user status */}
-         <Route
+        <Route
           path="/admin/settings/changeUserStatus"
           element={
             <ProtectedRoutes allowedRoles={['admin']}>
-              <ChangeUserStatus/>
+              <ChangeUserStatus />
             </ProtectedRoutes>
           }
         />
-
-
-
-
-
-
-
-
-
 
 
         {/* Staff dashboard */}
@@ -136,6 +136,8 @@ const App = () => {
             <StaffDashboard />
           </ProtectedRoutes>
         } />
+
+
 
 
         {/* Doctor dashboard */}
@@ -157,6 +159,41 @@ const App = () => {
             <PatientDashboard />
           </ProtectedRoutes>
         } />
+
+
+        {/* both admin and staff */}
+
+        <Route path='/patientManagement' element={
+          <ProtectedRoutes allowedRoles={['admin', 'staff']}>
+            <PatientManagement />
+          </ProtectedRoutes>
+        }
+        />
+        {/* common */}
+        <Route path='/appointmentManagement' element={
+          <ProtectedRoutes allowedRoles={['admin', 'staff', 'doctor', 'patient']}>
+            <AppointmentManagement />
+          </ProtectedRoutes>
+        }
+        />
+        {/* appointment booking */}
+        <Route
+          path="/:userRole/appointment/create"
+          element={
+            <ProtectedRoutes allowedRoles={['admin', 'staff', 'patient']}>
+              <AppointmentCreate />
+            </ProtectedRoutes>
+          }
+        />
+        {/* payment booking */}
+         <Route
+          path="/:userRole/payment/create"
+          element={
+            <ProtectedRoutes allowedRoles={['admin', 'staff', 'patient']}>
+              <PaymentManagement />
+            </ProtectedRoutes>
+          }
+        />
 
       </Routes>
     </BrowserRouter>

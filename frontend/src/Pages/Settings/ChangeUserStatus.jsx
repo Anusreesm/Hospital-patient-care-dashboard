@@ -77,7 +77,7 @@ const ChangeUserStatus = () => {
                 // success toast
                 DeleteItems("User");
             } else {
-               toast.error(res.message || "Failed to delete User");
+                toast.error(res.message || "Failed to delete User");
             }
         }
         catch (err) {
@@ -87,32 +87,43 @@ const ChangeUserStatus = () => {
 
     return (
         <>
-            <div className="flex h-screen">
+            <div className="flex flex-col sm:flex-row min-h-screen bg-gray-50">
                 <Sidebar />
                 <div className="flex-1 flex flex-col">
                     <Navbar />
-                    <div className="p-6">
-                        <h2 className="text-xl font-semibold mb-4">User Controlpanel</h2>
 
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full bg-white border rounded-lg shadow">
+                      {/* Scrollable content */}
+                    <div className="flex-1 overflow-y-auto p-3 sm:p-6">
+                        <h2 className="text-lg sm:text-xl font-semibold mb-4">
+                            User Control Panel
+                        </h2>
+
+                        {/* Table Container */}
+                        <div className="overflow-x-auto bg-white border rounded-lg shadow-sm">
+                            <table className="min-w-[600px] w-full text-sm sm:text-base">
                                 <thead>
-                                    <tr className="bg-gray-100 text-left">
-                                        <th className="p-3">#</th>
-                                        <th className="p-3">Name</th>
-                                        <th className="p-3">Email</th>
-                                        <th className="p-3">Role</th>
-                                        <th className="p-3">Status</th>
-                                        <th className="p-3">Action</th>
+                                    <tr className="bg-gray-100 text-gray-700 text-xs sm:text-sm">
+                                        <th className="p-3 text-left">#</th>
+                                        <th className="p-3 text-left">Name</th>
+                                        <th className="p-3 text-left">Email</th>
+                                        <th className="p-3 text-left">Role</th>
+                                        <th className="p-3 text-left">Status</th>
+                                        <th className="p-3 text-left">Action</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
                                     {users.length > 0 ? (
                                         users.map((user, index) => (
-                                            <tr key={user._id} className="border-b hover:bg-gray-50">
-                                                <td className="p-3">{index + 1}</td>
-                                                <td className="p-3">{user?.name}</td>
-                                                <td className="p-3">{user.email}</td>
+                                            <tr
+                                                key={user._id}
+                                                className="border-b hover:bg-gray-50 text-xs sm:text-sm"
+                                            >
+                                                <td className="p-3 whitespace-nowrap">{index + 1}</td>
+                                                <td className="p-3 whitespace-nowrap">{user?.name}</td>
+                                                <td className="p-3 whitespace-nowrap text-gray-600">
+                                                    {user.email}
+                                                </td>
                                                 <td className="p-3 capitalize">{user.role}</td>
                                                 <td className="p-3">
                                                     <select
@@ -120,31 +131,36 @@ const ChangeUserStatus = () => {
                                                         onChange={(e) =>
                                                             handleSelectChange(user._id, e.target.value)
                                                         }
-                                                        className="border border-gray-300 rounded-md p-1"
+                                                        className="border border-gray-300 rounded-md px-2 py-1 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                                                     >
                                                         <option value="active">Active</option>
                                                         <option value="deactivated">Deactivated</option>
                                                     </select>
                                                 </td>
-                                                <td className="p-3 flex flex row gap-2">
-                                                    <button
-                                                        onClick={() => handleUpdateStatus(user._id)}
-                                                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded transition"
-                                                    >
-                                                        Update
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDelete(user._id)}
-                                                        className="bg-blue-500 hover:bg-red-600 text-white px-3 py-1 rounded transition">
-                                                        delete
-                                                    </button>
+                                                <td className="p-3">
+                                                    <div className="flex flex-col sm:flex-row gap-2">
+                                                        <button
+                                                            onClick={() => handleUpdateStatus(user._id)}
+                                                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs sm:text-sm transition"
+                                                        >
+                                                            Update
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDelete(user._id)}
+                                                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs sm:text-sm transition"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
                                                 </td>
-
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="6" className="text-center py-4 text-gray-500">
+                                            <td
+                                                colSpan="6"
+                                                className="text-center py-4 text-gray-500 text-sm"
+                                            >
                                                 No users found
                                             </td>
                                         </tr>
@@ -153,6 +169,8 @@ const ChangeUserStatus = () => {
                             </table>
                         </div>
                     </div>
+
+
 
                 </div>
             </div>

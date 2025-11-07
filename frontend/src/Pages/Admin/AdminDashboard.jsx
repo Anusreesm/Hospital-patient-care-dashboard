@@ -14,6 +14,8 @@ const AdminDashboard = () => {
                     <p>Overview of hospital operations.</p>
                 </div>
             </div>
+            
+      
         </div>
     );
 };

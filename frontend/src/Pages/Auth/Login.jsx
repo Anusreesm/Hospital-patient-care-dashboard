@@ -103,13 +103,13 @@ const Login = () => {
                                 <span className="font-medium">Admin:</span> admin@gmail.com / admin
                             </li>
                             <li className="text-gray-700">
-                                <span className="font-medium">Staff:</span> staff@gmail.com / 9a871940
+                                <span className="font-medium">Staff:</span> staff@gmail.com / 029fabb0
                             </li>
                             <li className="text-gray-700">
                                 <span className="font-medium">Patient:</span> patient@gmail.com / Password1223
                             </li>
                             <li className="text-gray-700">
-                                <span className="font-medium">Doctor:</span> doctor@gmail.com / 718529f5
+                                <span className="font-medium">Doctor:</span> doctor@gmail.com / bc622727
                             </li>
                         </ul>
                     </div>
