@@ -355,7 +355,9 @@ export const forgotUserPassword = async (req, res) => {
         user.resetPasswordToken = token
         user.resetPasswordExpires = Date.now() + 3600000 //1 hour
         await user.save()
-        const resetLink = `http://localhost:5173/reset-password/${token}`;
+        // const resetLink = `http://localhost:5173/reset-password/${token}`;
+        const resetLink = `${process.env.CLIENT_URL}/reset-password/${token}`;
+
         const emailContent = EmailTempForResetPw({
             toEmail: email,
             name: user.name,

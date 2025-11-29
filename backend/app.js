@@ -24,9 +24,12 @@ const app = express()
 // middlewares
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "DELETE","PATCH","PUT"],
-    credentials: true,
+    origin: [
+      "http://localhost:5173", // local testing
+      "https://hospital-patient-care-dashboard-h0hcozc57-anusree-sms-projects.vercel.app" // your live frontend
+    ],
+    methods: ["GET","POST","DELETE","PATCH","PUT"],
+    credentials: true
   })
 );
 

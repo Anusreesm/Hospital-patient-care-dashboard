@@ -71,8 +71,11 @@ export const addPayment = async (req, res) => {
                     quantity: 1,
                 }
             ],
-            success_url: `http://localhost:5173/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `http://localhost:5173/cancel?payment_id=${payment._id}`,
+           
+
+            success_url: `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.CLIENT_URL}/cancel?payment_id=${payment._id}`,
+
 
 
             metadata: {
@@ -140,7 +143,7 @@ export const paymentCancel = async (req, res) => {
     try {
         const { payment_id } = req.query;
         if (!payment_id) {
-            return errorResponse(res, STATUS.BAD_REQUEST,MESSAGES.PAYMENT.PAYMENT_ID_REQUIRED);
+            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.PAYMENT.PAYMENT_ID_REQUIRED);
         }
         const payment = await paymentModel.findById(payment_id);
         if (payment) {
@@ -161,9 +164,9 @@ export const paymentCancel = async (req, res) => {
 // @route   GET/api/payment/
 // @desc   GET all Payment 
 // @access admin/users
-export const getAllPayment = async(req, res) => {
+export const getAllPayment = async (req, res) => {
     try {
-        const payment= await paymentModel.find()
+        const payment = await paymentModel.find()
         return successResponse(
             res,
             STATUS.OK,

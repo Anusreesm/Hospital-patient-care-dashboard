@@ -1,4 +1,5 @@
 const EmailTempForPatToken = ({ toEmail, patientToken }) => {
+  const dashboardLink = process.env.CLIENT_URL;
   return {
     subject: 'MedTech – Your Patient Access Token',
     text: `Hello, your MedTech patient access token is: ${patientToken}`,
@@ -15,7 +16,7 @@ const EmailTempForPatToken = ({ toEmail, patientToken }) => {
         <p><strong>Email:</strong> ${toEmail}</p>
         <p><strong>Access Token:</strong> ${patientToken}</p>
         <p>You can access your patient dashboard here: 
-          <a href="http://localhost:5173/" target="_blank" 
+          <a href="${dashboardLink}" target="_blank" 
    style="display:inline-block; padding:10px 20px; background:#0a5f7b; color:white; text-decoration:none; border-radius:5px;">
    Access Dashboard
 </a>

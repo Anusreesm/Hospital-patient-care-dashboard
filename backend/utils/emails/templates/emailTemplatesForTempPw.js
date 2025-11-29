@@ -1,6 +1,6 @@
 const EmailTempForTempPw = ({ toEmail, tempPassword, role,name }) => {
     
-  
+   const dashboardLink = process.env.CLIENT_URL;
   // Only include role in email if not 'patient'
     const roleInfo = role !== 'patient' 
       ? `<p><strong>Role: </strong> ${role}</p>` 
@@ -20,7 +20,7 @@ const EmailTempForTempPw = ({ toEmail, tempPassword, role,name }) => {
           <p><strong>Temporary Password:</strong> ${tempPassword}</p>
           ${roleInfo}
           <p>Please log in and change your password immediately for security purposes (do not share with anyone)</p>
-            <a href="http://localhost:5173/" target="_blank" 
+             <a href="${dashboardLink}" target="_blank"  
    style="display:inline-block; padding:10px 20px; background:#0a5f7b; color:white; text-decoration:none; border-radius:5px;">Access your dashboard here: MedTech Login</a>
           <br/>
           <p style="font-size: 0.9em; color: #555;">If you did not expect this email, please contact your admin.</p>
