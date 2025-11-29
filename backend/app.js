@@ -25,7 +25,7 @@ const app = express()
 app.use(
   cors({
     origin: [
-      "https://hospital-patient-care-dashboard-i9x8vq7do-anusree-sms-projects.vercel.app" // your live frontend
+      "https://hospital-patient-care-dashboard.vercel.app" //  live frontend
     ],
     methods: ["GET","POST","DELETE","PATCH","PUT"],
     credentials: true
