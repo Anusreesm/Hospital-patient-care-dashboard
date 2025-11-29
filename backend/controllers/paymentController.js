@@ -13,7 +13,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET)
 // @desc    add Payment
 // @access admin/users
 export const addPayment = async (req, res) => {
+
     try {
+
         const {
             user_id,
             patient_id,
@@ -26,6 +28,30 @@ export const addPayment = async (req, res) => {
         if (!amount || amount <= 0) {
             return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.PAYMENT.INVALID_AMT);
         }
+        // Ensure appointment exists
+        const appointment = await appointmentModel.findById(appointment_id);
+        if (!appointment) {
+            return errorResponse(res, STATUS.NOT_FOUND, "Appointment not found");
+        }
+
+        // Create pending payment if not exists
+        let payment = await paymentModel.findOne({ appointment_id });
+        if (!payment) {
+            payment = await paymentModel.create({
+                user_id,
+                patient_id,
+                hosp_staff_id,
+                appointment_id,
+                amount,
+                payment_method: payment_method || "card",
+                description: description || "Appointment Payment",
+                status: "pending",
+            });
+        }
+
+
+
+
         // CHECKOUT SESSION
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -45,34 +71,16 @@ export const addPayment = async (req, res) => {
                     quantity: 1,
                 }
             ],
-            success_url: "http://localhost:5173/success",
-            cancel_url: "http://localhost:5173/cancel",
+            success_url: `http://localhost:5173/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `http://localhost:5173/cancel?payment_id=${payment._id}`,
+
+
             metadata: {
-                user_id,
-                patient_id,
-                hosp_staff_id,
-                appointment_id,
-                payment_method,
+                payment_id: payment._id.toString(),
+                appointment_id: appointment._id.toString(),
             },
         });
-        // Save payment info in MongoDB
-        const newPayment = await paymentModel.create({
-            user_id,
-            patient_id,
-            hosp_staff_id,
-            appointment_id,
-            amount,
-            payment_method,
-            description,
-            status: "pending", // update to 'paid' after webhook confirmation
-            transactionId: session.id, // store stripe session id
-        });
 
-        // Link this payment to appointment and update status to confirmed
-        await appointmentModel.findByIdAndUpdate(appointment_id, {
-            payment_id: newPayment._id,
-            status: "confirmed",
-        }, { new: true });
         return successResponse(
             res,
             STATUS.OK,
@@ -81,19 +89,89 @@ export const addPayment = async (req, res) => {
         )
     }
     catch (error) {
-        console.error("Stripe Error:", error);
+        console.error("Stripe create session error:", error);
+
         return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 }
+// @route   GET/api/payment/success
+// @desc   Success URL handler 
+// @access admin/users
+export const paymentSuccess = async (req, res) => {
+    try {
+        const { session_id } = req.query;
+
+        const session = await stripe.checkout.sessions.retrieve(session_id);
+        const { payment_id, appointment_id } = session.metadata;
+
+        // update payment
+        const payment = await paymentModel.findById(payment_id);
+        if (!payment) {
+            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.PAYMENT.INVALID_PAYMENT_ID)
+        }
+
+        payment.status = "paid";
+        payment.transactionId = session.id;
+        payment.amount = session.amount_total / 100;
+        await payment.save();
+
+        // update appointment
+        const appointment = await appointmentModel.findById(appointment_id);
+        if (appointment) {
+            appointment.status = "confirmed";
+            await appointment.save();
+        }
+        return successResponse(
+            res,
+            STATUS.OK,
+            MESSAGES.PAYMENT.PAYMENT_APPOINTMENT_CONFIRM
+        )
+
+    } catch (error) {
+        console.error(" Error in payment success:", error);
+        return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
+    }
+};
+// @route   GET/api/payment/cancel
+// @desc    Cancel URL handler 
+// @access admin/users
+
+export const paymentCancel = async (req, res) => {
+    try {
+        const { payment_id } = req.query;
+        if (!payment_id) {
+            return errorResponse(res, STATUS.BAD_REQUEST,MESSAGES.PAYMENT.PAYMENT_ID_REQUIRED);
+        }
+        const payment = await paymentModel.findById(payment_id);
+        if (payment) {
+            payment.status = "failed";
+            await payment.save();
+        } else {
+            return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.PAYMENT.PAYMENT_NOT_FOUND);
+        }
+        return successResponse(res, STATUS.OK, {}, MESSAGES.PAYMENT.PAYMENT_CANCELLED_FAILED)
+
+    } catch (error) {
+        console.error(" Error in payment cancel:", error);
+        return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
+    }
+};
+
 
 // @route   GET/api/payment/
 // @desc   GET all Payment 
 // @access admin/users
-export const getAllPayment = (req,res) => {
+export const getAllPayment = async(req, res) => {
     try {
+        const payment= await paymentModel.find()
         return successResponse(
-            "message"
-        );
+            res,
+            STATUS.OK,
+            {
+                payment
+            },
+            MESSAGES.PAYMENT.PAYMENTS_FETCHED
+        )
     }
     catch (error) {
         return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
@@ -134,3 +212,4 @@ export const deletePayment = () => {
 
     }
 }
+

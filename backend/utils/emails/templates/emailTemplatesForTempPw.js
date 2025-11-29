@@ -20,7 +20,8 @@ const EmailTempForTempPw = ({ toEmail, tempPassword, role,name }) => {
           <p><strong>Temporary Password:</strong> ${tempPassword}</p>
           ${roleInfo}
           <p>Please log in and change your password immediately for security purposes (do not share with anyone)</p>
-          <p>Access your dashboard here: MedTech Login</p>
+            <a href="http://localhost:5173/" target="_blank" 
+   style="display:inline-block; padding:10px 20px; background:#0a5f7b; color:white; text-decoration:none; border-radius:5px;">Access your dashboard here: MedTech Login</a>
           <br/>
           <p style="font-size: 0.9em; color: #555;">If you did not expect this email, please contact your admin.</p>
         </div>

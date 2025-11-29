@@ -1,5 +1,6 @@
 import express from "express"
 import UserRouter from "./routes/userRoutes.js"
+import bodyParser from "body-parser";
 import cors from "cors"
 import PatientRouter from "./routes/patientRoutes.js"
 import RegistrationRouter from "./routes/registrationRoutes.js"
@@ -16,11 +17,23 @@ import DeptMasterRouter from "./routes/deptMasterRoutes.js"
 import BloodBankMasterRouter from "./routes/bloodBankMasterRoutes.js"
 
 import PatientAddressRouter from "./routes/addressesRoutes.js"
+import BloodBankDonorRouter from "./routes/bloodBankDonorRoute.js";
+
 
 const app = express()
 // middlewares
-app.use(express.json())
-app.use(cors())
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "DELETE","PATCH","PUT"],
+    credentials: true,
+  })
+);
+
+
+
+app.use(express.json());
+
 
 app.use('/api/users', UserRouter)
 app.use('/api/patient', PatientRouter)
@@ -33,6 +46,7 @@ app.use('/api/appointment', AppointmentRouter )
 app.use('/api/payment', PaymentRouter )
 app.use('/api/bloodBank', BloodBankMasterRouter )
 app.use('/api/bloodBankReq', BloodBankReqRouter )
+app.use('/api/bloodBankDonor',BloodBankDonorRouter)
 app.use('/api/notification', NotificationRouter )
 app.use('/api/feedback', FeedbackRouter )
 app.use('/api/chat', ChatRouter )

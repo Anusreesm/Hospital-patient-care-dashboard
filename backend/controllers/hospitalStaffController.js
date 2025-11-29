@@ -27,13 +27,13 @@ export const registerhospStaff = async (req, res) => {
         if (!department) {
             return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.DEPARTMENT.INVALID_DEPT_ID)
         }
-          //  phone number includes +91 
+        //  phone number includes +91 
         if (phone && !phone.startsWith("+91")) {
             phone = `+91${phone.replace(/^\+?91/, "").trim()}`;
         }
         //  Determine role based on department  (case-insensitive) 
         let role = "staff";
-       if (/doctor/i.test(department.dept_name)) {
+        if (/doctor/i.test(department.dept_name)) {
             role = "doctor";
             // Doctor-specific validation
             if (!specialization_id || !medical_license) {
@@ -54,10 +54,10 @@ export const registerhospStaff = async (req, res) => {
             specialization_id: specialization_id || null,    // empty string to null
             isActive: true,
         });
-console.log("Sending email to:", email, "with name:", name);
+        console.log("Sending email to:", email, "with name:", name);
 
         // Send temp password email
-        const emailContent = EmailTempForTempPw({ toEmail: email, tempPassword, role,name });
+        const emailContent = EmailTempForTempPw({ toEmail: email, tempPassword, role, name });
         // sending email and displaying email is on emailcontent
         await SendMail(email, emailContent);
 
@@ -165,9 +165,9 @@ export const updatehospStaff = async (req, res) => {
 
 
         // Check if at least one field is provided
-        if (Object.keys(updateHospStaff).length === 0) {
-            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.HOSP_STAFF.REQUIRED_FIELDS);
-        }
+        // if (Object.keys(updateHospStaff).length === 0) {
+        //     return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.HOSP_STAFF.REQUIRED_FIELDS);
+        // }
         // updateStaff
         const updatedStaff = await hospitalStaffModel.findByIdAndUpdate(
             id,
@@ -179,10 +179,33 @@ export const updatehospStaff = async (req, res) => {
             console.log(error)
             return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.HOSP_STAFF.HOSP_STAFF_NOT_FOUND);
         }
+        const currentUser = await userModel.findById(staff.user_id);
+        const oldEmail = currentUser.email;
 
+        let emailChanged = false;
         // sync to userModel
         const userUpdates = {};
-        if (email) userUpdates.email = email.toLowerCase();
+
+
+        
+        if (email && email.toLowerCase() !== oldEmail) {
+
+            // Email exists validator
+            const existingUser = await userModel.findOne({
+                email: email.toLowerCase(),
+                _id: { $ne: staff.user_id }
+            });
+
+            if (existingUser) {
+                return errorResponse(
+                    res,
+                    STATUS.BAD_REQUEST,
+                    MESSAGES.USER.EMAIL_EXISTS
+                );
+            }
+            userUpdates.email = email.toLowerCase();
+            emailChanged = true;
+        }
         if (name) userUpdates.name = name.trim();
         if (phone) userUpdates.phone = phone;
         if (dept_id) {
@@ -203,6 +226,26 @@ export const updatehospStaff = async (req, res) => {
         if (Object.keys(userUpdates).length > 0) {
             await userModel.findByIdAndUpdate(staff.user_id, { $set: userUpdates });
         }
+        if (emailChanged) {
+            const emailContent = {
+                subject: "Your MedTech Email Has Been Updated",
+                text: `Hello ${currentUser.name}, your email has been successfully updated.`,
+                html: `
+            <div style="font-family: Arial; color:#333;">
+                <h3>Email Updated Successfully</h3>
+                <p>Hello ${currentUser.name},</p>
+                <p>Your MedTech login email has been updated to:</p>
+                <p><b>${userUpdates.email}</b></p>
+                <p>You can continue using your current password.</p>
+                <br/>
+                <p>If you did NOT request this change, please contact the admin immediately.</p>
+            </div>
+        `
+            };
+
+            await SendMail(userUpdates.email, emailContent);
+        }
+
         return successResponse(
             res,
             STATUS.OK,
@@ -233,7 +276,7 @@ export const deletehospStaff = async (req, res) => {
         staff.isActive = false;
         staff.deletedAt = new Date();
         await staff.save();
-        
+
         await userModel.findByIdAndUpdate(staff.user_id, { status: "deactivated" });
         return successResponse(
             res,

@@ -5,22 +5,22 @@ const paymentSchema = new mongoose.Schema(
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: false
     },
     patient_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
-      required: true
+     required:false
     },
     hosp_staff_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "HospitalStaff",
-      required: true
+      required: false
     },
     appointment_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Appointment",
-      required: true
+       required: false, 
     },
     amount: {
       type: Number,
@@ -33,7 +33,7 @@ const paymentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "paid", "failed"],
+      enum: ["pending", "paid", "failed","deleted"],
       default: "pending"
     },
     description: {

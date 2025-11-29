@@ -38,11 +38,11 @@ const patientSchema = new mongoose.Schema(
       enum: ["male", "female", "others"],
       required: true
     },
-    bloodBank_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "BloodBank",
-      required: true
-    },
+   bloodType: {
+    type: String,
+    enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+    required: true
+},
     emergency_name: {
       type: String,
 

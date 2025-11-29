@@ -7,30 +7,38 @@ const bloodBankReqSchema = new mongoose.Schema(
       ref: "User",
       required: true
     },
-    blood_bank_id: {
+    appointment_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "BloodBank",
+      ref: "Appointment",
       required: true
     },
+ 
     request_date: {
       type: Date,
       required: true
     },
+    units_required: {
+      type: Number
+    },
     status: {
       type: String,
       required: true,
-      enum: ["pending", "rejected", "approved"], 
+      enum: ["pending", "rejected", "approved"],
       default: "pending"
     },
     priority: {
       type: String,
-      enum: ["low", "medium", "high"], 
+      enum: ["low", "medium", "high", "emergency"],
       default: "medium"
     },
-    fulfilled_date: { 
-      type: Date 
+    fulfilled_date: {
+      type: Date
     },
-    reason:{
+     wasStockDeducted: {
+        type: Boolean,
+        default: false
+    },
+    reason: {
       type: String
     }
   },

@@ -11,6 +11,7 @@ import SendMail from "../utils/emails/sendMail.js"
 
 import EmailTempForPatToken from "../utils/emails/templates/emailTemplateForPatientToken.js"
 import sendTextToken from "../utils/SMS/sendTextWhatsapp.js"
+import paymentModel from "../models/Payment.js"
 
 
 // @route   POST/api/appointment/create
@@ -30,14 +31,42 @@ export const addAppointment = async (req, res) => {
             status = "scheduled",
             amount
         } = req.body
+
+        //  Create a pending payment entry
+        const pendingPayment = await paymentModel.create({
+            user_id,
+            patient_id,
+            hosp_staff_id,
+            amount,
+            payment_method: "card",
+            description: description || "Appointment payment",
+            status: "pending",
+        });
+
+
+
         // get last appointment
         const lastAppointment = await appointmentModel.findOne().sort({ createdAt: -1 });
         // Generate new token number
         const token_no = await createPatientToken(lastAppointment);
+
+
+        const registration = await regModel.findOne({
+            patient_id,
+            discharge_date: null,
+            status: { $nin: ["deleted", "discharged"] }
+        }).sort({ registration_date: -1 });
+       
+        if (!registration) {
+            return errorResponse(res, STATUS.BAD_REQUEST, "No active registration found for this patient");
+        }
+
+
+
         // new appointment   
         const appointment = await appointmentModel.create({
-            payment_id,
-            reg_id,
+            payment_id: pendingPayment._id,
+            reg_id: registration._id,
             patient_id,
             user_id,
             hosp_staff_id,
@@ -49,6 +78,8 @@ export const addAppointment = async (req, res) => {
             status,
             amount
         });
+        pendingPayment.appointment_id = appointment._id;
+        await pendingPayment.save();
         // populate
         await populateAppointment(appointment);
         //  Get patient's email via their user_id
@@ -165,22 +196,62 @@ export const updateAppointment = async (req, res) => {
     try {
         const { id } = req.params;
         const updateAppointments = req.updateAppointments;
-        // Update patient
+
+
+        // Fetch current appointment first
+        const currentAppointment = await appointmentModel.findById(id);
+        if (!currentAppointment) {
+            return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.APPOINTMENT.APPOINTMENT_NOT_FOUND);
+        }
+
+        // console.log("Current appointment from DB:", currentAppointment);
+
+        // Handle "Mark as Complete" logic
+        if (updateAppointments.status === "completed") {
+
+            // console.log("Attempting to mark complete...");
+            // console.log("Current appointment status:", currentAppointment.status);
+
+            // Step 1: Ensure current status is confirmed
+            if (currentAppointment.status !== "confirmed") {
+                return errorResponse(
+                    res,
+                    STATUS.BAD_REQUEST,
+                    "Appointment must be confirmed before marking complete"
+                );
+            }
+
+            // Step 2: Check payment
+            const payment = await paymentModel.findOne({ appointment_id: currentAppointment._id });
+            // console.log("Payment found:", payment);
+
+            if (!payment || payment.status !== "paid") {
+                return errorResponse(
+                    res,
+                    STATUS.BAD_REQUEST,
+                    "Cannot mark complete until payment is paid"
+                );
+            }
+
+            // Step 3: Update registration if exists
+            if (currentAppointment.reg_id) {
+                await regModel.findByIdAndUpdate(
+                    currentAppointment.reg_id,
+                    { $set: { status: "discharged", discharge_date: new Date() } },
+                    { new: true }
+                );
+            }
+        }
+
+
+        // actual appointment update
         const updatedAppointment = await appointmentModel.findByIdAndUpdate(
             id,
             { $set: updateAppointments },
             { new: true }
         );
-        if (!updatedAppointment) {
-            return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.APPOINTMENT.APPOINTMENT_NOT_FOUND);
-        }
-        if (updateAppointments.status === "completed") {
-            await regModel.findByIdAndUpdate(
-                updatedAppointment.reg_id,
-                { $set: { status: "discharged", discharge_date: new Date() } },
-                { new: true }
-            );
-        }
+        // console.log("updateAppointments:", updateAppointments)
+
         return successResponse(
             res,
             STATUS.OK,
@@ -218,7 +289,13 @@ export const deleteAppointment = async (req, res) => {
         }
         appointment.status = "cancelled";
         await appointment.save();
-
+        if (appointment.payment_id) {
+            await paymentModel.findByIdAndUpdate(
+                appointment.payment_id,
+                { $set: { status: "deleted" } },
+                { new: true }
+            );
+        }
         return successResponse(
             res,
             STATUS.OK,

@@ -14,10 +14,12 @@ const EmailTempForPatToken = ({ toEmail, patientToken }) => {
         <p>Your MedTech patient access token has been generated successfully.</p>
         <p><strong>Email:</strong> ${toEmail}</p>
         <p><strong>Access Token:</strong> ${patientToken}</p>
-        <p>Please use this token to verify your account or access your dashboard. 
-        For your security, do not share this token with anyone.</p>
         <p>You can access your patient dashboard here: 
-          <a href="https://medtech-login.example.com" target="_blank">MedTech Dashboard</a>
+          <a href="http://localhost:5173/" target="_blank" 
+   style="display:inline-block; padding:10px 20px; background:#0a5f7b; color:white; text-decoration:none; border-radius:5px;">
+   Access Dashboard
+</a>
+
         </p>
         <br/>
         <p style="font-size: 0.9em; color: #555;">

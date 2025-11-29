@@ -1,13 +1,14 @@
 import express from "express";
 import { deletehospStaff, gethospStaff, gethospStaffById, registerhospStaff, updatehospStaff } from "../controllers/hospitalStaffController.js";
 import { ValidateAddHospStaff } from "../validators/hospStaffValidators.js";
+import { authorize } from "../middlewares/authorize.js";
 
 
 const HospitalStaffRouter = express.Router()
 
 // @route   POST/api/hospStaff/register
 // @desc    create new staff
-HospitalStaffRouter.post("/register",ValidateAddHospStaff, registerhospStaff)
+HospitalStaffRouter.post("/register",ValidateAddHospStaff,authorize("admin"), registerhospStaff)
 
 
 // @route   GET/api/hospStaff/

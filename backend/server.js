@@ -13,6 +13,8 @@ connectDB()
     .then(async () => {
         console.log("MongoDB connected successfully");
 
+
+
         // Ensure 'doctor' department exists
         const doctorDept = await deptModel.findOne({ dept_name: "doctor" });
         if (!doctorDept) {

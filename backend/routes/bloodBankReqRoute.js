@@ -1,8 +1,15 @@
 import express from "express";
-import { createBloodBankReq, deleteBloodBankReq, getBloodBankReq, getBloodBankReqById, updateBloodBankReq } from "../controllers/bloodBankReqController.js";
+import { createBloodBankReq, deleteBloodBankReq, getBloodBankReq, getBloodBankReqById, getConfirmedAppointments, updateBloodBankReq } from "../controllers/bloodBankReqController.js";
 
 
 const BloodBankReqRouter = express.Router()
+
+
+// @route   PUT /api/bloodBankReq/confirmed-appointments
+// @desc    load confirmed appointments for dropdown
+BloodBankReqRouter.get("/confirmed-appointments", getConfirmedAppointments);
+
+
 // @route   POST /api/bloodBankReq/create
 // @desc    Create new blood bank Req
 BloodBankReqRouter.post("/create", createBloodBankReq);
@@ -18,6 +25,8 @@ BloodBankReqRouter.get("/:id", getBloodBankReqById);
 // @route   PUT /api/bloodBankReq/update/:id
 // @desc    Update blood bank Req
 BloodBankReqRouter.put("/update/:id", updateBloodBankReq);
+
+
 
 // @route   DELETE /api/bloodBankReq/delete/:id
 // @desc    Delete blood bank Req

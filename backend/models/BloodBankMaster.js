@@ -1,20 +1,26 @@
-import mongoose, { model } from "mongoose";
+import mongoose from "mongoose";
 
-const bloodBankSchema=new mongoose.Schema(
-   {
+const bloodBankSchema = new mongoose.Schema(
+  {
     blood_type: {
       type: String,
-      enum: ["A+","A-","B+","B-","AB+","AB-","O+", "O-"],
       required: true,
-      unique: true 
+      enum: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
+      unique: true, // One entry per blood type
     },
-    // ml
     available_unit: {
       type: Number,
-      required: true
+      required: true,
+      default: 0,
+      min: 0, // cannot go negative
+    },
+    last_updated: {
+      type: Date,
+      default: Date.now,
     }
   },
   { timestamps: true }
 );
-const bloodBankModel= mongoose.model('BloodBank',bloodBankSchema) 
-export default bloodBankModel
+
+const bloodBankModel = mongoose.model("BloodBank", bloodBankSchema);
+export default bloodBankModel;

@@ -9,14 +9,14 @@ export const getPatientsQuery = () => {
       {
         path: "addresses_id",
         select: "street city state country pincode"
-      },
-      {
-        path: "bloodBank_id",
-        select: "blood_type"
-      },
+       },
+      // {
+      //   path: "bloodBank_id",
+      //   select: "blood_type"
+      // },
       {
         path: "user_id",
-        select: "role status email"
+        select: "role status email name"
       }
     ]);
 };
@@ -26,7 +26,7 @@ export const getPatientsQuery = () => {
 export const getPatientsByIdQuery = (id) => {
   return patientModel.findById(id)
     .populate("addresses_id", "street city state country pincode")
-    .populate("bloodBank_id", "blood_type")
+    // .populate("bloodBank_id", "blood_type")
     .populate("user_id","role status email")
 
 }
@@ -41,15 +41,11 @@ export const getRegsQuery = () => {
       },
       {
         path: "patient_id",
-        select: "created_by name phone age gender",
+        select: "created_by name phone age gender bloodType emergency_name emergency_contact",
         populate: [
           {
             path: "addresses_id",
             select: "street city state country pincode",
-          },
-          {
-            path: "bloodBank_id",
-            select: "blood_type",
           },
         ],
       },
@@ -67,16 +63,16 @@ export const getRegByIdQuery = async (id) => {
     })
     .populate({
       path: "patient_id",
-      select: "created_by name phone age gender",
+      select: "created_by name phone age gender bloodType",
       populate: [
         {
           path: "addresses_id",
           select: "street city state country pincode",
         },
-        {
-          path: "bloodBank_id",
-          select: "blood_type",
-        },
+        // {
+        //   path: "bloodBank_id",
+        //   select: "blood_type",
+        // },
       ],
        options: { strictPopulate: false }, //  Important: prevents errors if ref missing
     })

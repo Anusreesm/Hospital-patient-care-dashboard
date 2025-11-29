@@ -1,6 +1,7 @@
 import express from "express";
-import { deletePatient, getPatient, getPatientById, registerPatient, updatePatient } from "../controllers/patientController.js";
+import { deletePatient, findPatientByPhone, getPatient, getPatientById, registerPatient, updatePatient } from "../controllers/patientController.js";
 import { validateAddPatient, validateDeletePatient, validateGetPatientById, validateUpdatePatient } from "../validators/patientValidator.js";
+
 
 
 const PatientRouter=express.Router()
@@ -10,9 +11,15 @@ const PatientRouter=express.Router()
 PatientRouter.post("/register",validateAddPatient ,registerPatient)
 
 
+
+
 // @route   GET/api/patient/
 // @desc   GET all patient
 PatientRouter.get("/", getPatient)
+
+// @route   GET/api/patient/find-by-phone/:phone
+// @desc   GET patient by phone number
+PatientRouter.get("/find-by-phone/:phone",findPatientByPhone)
 
 // @route   GET/api/patient/:id
 // @desc   GET single patient

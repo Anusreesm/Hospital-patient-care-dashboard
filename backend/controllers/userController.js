@@ -6,7 +6,10 @@ import userModel from "../models/User.js"
 import bcrypt from "bcrypt"
 import generateToken from "../utils/generateToken.js"
 import hospitalStaffModel from "../models/HospitalStaff.js";
-
+import crypto from "crypto";
+import EmailTempForTempPw from "../utils/emails/templates/emailTemplatesForTempPw.js";
+import SendMail from "../utils/emails/sendMail.js";
+import { EmailTempForResetPw } from "../utils/emails/templates/emailTemplateForResetPwLink.js";
 // @desc Register new patient
 // @route POST/api/users/register
 // @access Public 
@@ -101,6 +104,7 @@ export const loginUser = async (req, res) => {
 // @route POST/api/users/
 // @access Admin
 export const getUsers = async (req, res) => {
+
     try {
         // To find All User
         const users = await userModel.find({ isActive: true })
@@ -162,9 +166,9 @@ export const updateUser = async (req, res) => {
         }
         // Destructure to separate sensitive fields
         let { password, role, status, ...otherDatas } = req.body
-        // temporary until i write auth
 
-        req.user = { role: "admin" };
+
+
         // Only admin can update role or status
         if (!req.user || req.user.role !== "admin") {
             role = undefined;
@@ -335,70 +339,82 @@ export const changeUserPassword = async (req, res) => {
 
 }
 
-// @desc    Change user password-only needs newPassword, used in forgot password flow
-// @route   PATCH /api/users/forgotPassword/:id
-// @access Admin/User
+// @desc    Send reset-password link to user's email
+// @route   POST /api/users/forgotPassword
+// @access  Public
+
 export const forgotUserPassword = async (req, res) => {
     try {
-        const { id } = req.params;
-        // check if the id is valid
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return errorResponse(
-                res,
-                STATUS.BAD_REQUEST,
-                MESSAGES.USER.INVALID_USER_ID
-            )
-        }
-        const { newPassword } = req.body;
-        if (!newPassword) {
-            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.USER.NEW_PASSWORD_REQUIRED);
-        }
-        // // find user
-        const user = await userModel.findById(id)
-        // If no user is found
+        const { email } = req.body
+        const user = await userModel.findOne({ email })
         if (!user) {
-            return errorResponse(
-                res,
-                STATUS.NOT_FOUND,
-                MESSAGES.USER.USER_NOT_FOUND);
+            return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.USER.USER_NOT_FOUND)
         }
+        // Generate Token
+        const token = crypto.randomBytes(32).toString("hex")
+        user.resetPasswordToken = token
+        user.resetPasswordExpires = Date.now() + 3600000 //1 hour
+        await user.save()
+        const resetLink = `http://localhost:5173/reset-password/${token}`;
+        const emailContent = EmailTempForResetPw({
+            toEmail: email,
+            name: user.name,
+            role: user.role,
+            resetLink
+        });
 
-        // set new password 
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        user.password = hashedPassword
-        await user.save();
+        await SendMail(email, emailContent);
 
-        return successResponse(
-            res,
-            STATUS.OK,
-            null,
-            MESSAGES.USER.PASSWORD_UPDATED
-        )
+        return successResponse(res, STATUS.OK, MESSAGES.USER.RESET_LINK)
+
     }
     catch (error) {
         return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
-
 }
 
-
-
+// @desc     reset-password 
+// @route   POST /api/users/resetPassword/:token
+// @access  Public
+export const resetPassword=async(req,res)=>{
+    try{
+        const {token}=req.params
+        const {password}=req.body
+        const user=await userModel.findOne({
+            resetPasswordToken:token,
+            resetPasswordExpires:{$gt:Date.now()}
+        })
+        if(!user){
+            return errorResponse(res,STATUS.BAD_REQUEST,MESSAGES.USER.INVALID_EXPIRED)
+        }
+        const salt=await bcrypt.genSalt(10)
+        user.password=await bcrypt.hash(password,salt)
+        user.resetPasswordToken=null
+        user.resetPasswordExpires=null
+        await user.save()
+        return successResponse(res,STATUS.OK,MESSAGES.USER.PASSWORD_RESET)
+    }
+    catch(error)
+    {
+        return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
+    }
+}
 
 // @route GET/api/users/check-email/:email
 // desc Check email duplicates
 // @access admin
-export const checkEmail=async(req,res)=>{
- try {
-     const { email } = req.params;
-    if (!email) {
-      return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.USER.INVALID_EMAIL);
+export const checkEmail = async (req, res) => {
+    try {
+        const { email } = req.params;
+        if (!email) {
+            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.USER.INVALID_EMAIL);
+        }
+        const existingUser = await userModel.findOne({ email: email.trim().toLowerCase() });
+        if (existingUser) {
+            return errorResponse(res, STATUS.CONFLICT, MESSAGES.USER.EMAIL_EXISTS);
+        }
+        return successResponse(res, STATUS.OK, MESSAGES.USER.EMAIL_AVAILABLE);
+    } catch (error) {
+        return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR);
     }
-    const existingUser = await userModel.findOne({ email: email.trim().toLowerCase() });
-    if (existingUser) {
-      return errorResponse(res, STATUS.CONFLICT, MESSAGES.USER.EMAIL_EXISTS);
-    }
-    return successResponse(res, STATUS.OK, MESSAGES.USER.EMAIL_AVAILABLE );
-  } catch (error) {
-    return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR);
-  }
 };

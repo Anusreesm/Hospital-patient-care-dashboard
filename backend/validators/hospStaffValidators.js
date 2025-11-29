@@ -18,7 +18,7 @@ export const ValidateAddHospStaff = async (req, res, next) => {
     if (exp_years < 0) {
         return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.COMMON.INVALID_NUMBER);
     }
-    // 4️⃣ Check if email already exists
+    //  Check if email already exists
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
         return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.USER.EMAIL_EXISTS);

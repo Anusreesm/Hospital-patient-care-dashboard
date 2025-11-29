@@ -7,29 +7,39 @@ export const MESSAGES = {
   ACCOUNT_INACTIVE: "Your account is deactivated. Please contact admin.",
   ACCESS_DENIED: "Access denied. Admins only.",
 
+  AUTH: {
+    NO_TOKEN: "Authorization token missing",
+    INVALID_TOKEN: "Invalid or expired token",
+    USER_NOT_FOUND: "User not found for this token",
+    UNAUTHORIZED_ADMIN: "Admin access required",
+
+  },
+
+
   COMMON: {
     PHONE_INVALID: "Phone number must be 10 digits",
     EMAIL_INVALID: "Invalid email format",
     REQUIRED_FIELDS: "All required fields must be provided",
     SERVICE_ERROR: "Something went wrong. Please try again later.",
     INVALID_NUMBER: "Invalid numbers",
-    EMAIL_SEND:"Email sent:  ",
-    EMAIL_ERROR:"Error sending email: ",
-    PINCODE_INVALID:"Pincode Invalid!",
-    WHATSAPP:"WhatsApp message sent! SID:",
-    ERROR_WHATSAPP:"Error sending WhatsApp message:",
-    INVALID_ID:"Invalid ID",
-    
+    EMAIL_SEND: "Email sent:  ",
+    EMAIL_ERROR: "Error sending email: ",
+    PINCODE_INVALID: "Pincode Invalid!",
+    WHATSAPP: "WhatsApp message sent! SID:",
+    ERROR_WHATSAPP: "Error sending WhatsApp message:",
+    INVALID_ID: "Invalid ID",
+
   },
 
   USER: {
     LOGIN_SUCCESS: "Login successful",
-    EMAIL_EXISTS: "Email already registered",
+    EMAIL_EXISTS: "Email already registered, Please try new one",
     USER_REGISTERED: "User registered successfully",
     USERS_FETCHED: "Users fetched Successfully",
     USER_FETCHED: "User fetched Successfully",
     USER_UPDATED: "User updated Successfully",
     USER_DELETED: "User deleted Successfully",
+    INVALID_EMAIL:"Invalid Email",
     USER_NOT_FOUND: "User not found",
     INVALID_USER_ID: "Invalid User ID",
     USER_STATUS_CHANGED: "User status changed successfully",
@@ -37,11 +47,14 @@ export const MESSAGES = {
     INVALID_OLD_PASSWORD: "Invalid old password",
     BOTH_PASSWORDS_REQUIRED: "Both old and new passwords are required",
     NEW_PASSWORD_REQUIRED: "New password is required",
-    INVALID_PASSWORD:"Password entered is incorrect",
-    INVALID_MAILID:"Mail Id you entered cannot find",
-    EMAIL_AVAILABLE:"Email is available",
+    INVALID_PASSWORD: "Password entered is incorrect",
+    INVALID_MAILID: "Mail Id you entered cannot find",
+    EMAIL_AVAILABLE: "Email is available",
+    RESET_LINK:"Password reset link sent to email",
+    INVALID_EXPIRED:"Invalid or expired token",
+    PASSWORD_RESET:"Password has been reset successfully"
   },
-   PATIENT: {
+  PATIENT: {
     PATIENT_CREATED: "Patient  Created Succesfully",
     PATIENT_EXISTS: "Patient  already exists",
     REQUIRED_FIELDS: "Required fields",
@@ -51,10 +64,10 @@ export const MESSAGES = {
     PATIENT_NOT_FOUND: "Patient  not found",
     PATIENT_UPDATED: "Patient  is updated",
     PATIENT_DELETED: "Patient  deleted Successfully",
-    PATIENT_NAME_LONG:"patient name is too long",
-    INVALID_CHARACTERS:"Invalid characters",
-     PATIENT_ID_DELETED:"Patient is deleted"
-   
+    PATIENT_NAME_LONG: "patient name is too long",
+    INVALID_CHARACTERS: "Invalid characters",
+    PATIENT_ID_DELETED: "Patient is deleted"
+
   },
   PATIENT_DETAILS: {
     PATIENT_DETAILS_CREATED: "Patient details Created Succesfully",
@@ -66,8 +79,8 @@ export const MESSAGES = {
     PATIENT_DETAILS_NOT_FOUND: "Patient details not found",
     PATIENT_DETAILS_UPDATED: "Patient details is updated",
     PATIENT_DETAILS_DELETED: "Patient details deleted Successfully",
-    INVALID_GENDER:"Invalid Gender",
-   
+    INVALID_GENDER: "Invalid Gender",
+
   },
   ADDRESS: {
     ADDRESS_CREATED: "Address Created Succesfully",
@@ -80,18 +93,18 @@ export const MESSAGES = {
     ADDRESS_UPDATED: "Address is updated",
     ADDRESS_DELETED: "Address deleted Successfully",
   },
-  REGISTRATION:{
-   REG_CREATED: "Registration Created Succesfully",
+  REGISTRATION: {
+    REG_CREATED: "Registration Created Succesfully",
     REGS_FETCHED: "Registrations fetched Successfully",
-    REG_NOT_FOUND:"Registration not found",
+    REG_NOT_FOUND: "Registration not found",
     REG_FETCHED: "Registration fetched Successfully",
     USER_PAT_DELETED: "Both user and patient have been deleted",
-    USER_DELETED:  "User has been deleted",
+    USER_DELETED: "User has been deleted",
     PATIENT_DELETED: "Patient has been deleted",
-     INVALID_REG_ID: "Invalid registration  ID",
-     REG_UPDATED:"Registration updated",
-     REG_DELETED: "Registration  deleted Successfully",
-     REGISTRATION_NOT_FOUND:"No active or discharged registration found for this ID.",
+    INVALID_REG_ID: "Invalid registration  ID",
+    REG_UPDATED: "Registration updated",
+    REG_DELETED: "Registration  deleted Successfully",
+    REGISTRATION_NOT_FOUND: "No active or discharged registration found for this ID.",
   },
   DEPARTMENT: {
     DEPT_CREATED: "Department Created Succesfully",
@@ -104,8 +117,8 @@ export const MESSAGES = {
     DEPT_NAME_REQUIRED: "Department name is required!",
     DEPT_UPDATED: "Department is updated",
     DEPT_DELETED: "Department deleted Successfully",
-    DOCTOR_DEPT_CANNOT:"Doctor department cannot be deleted.",
-    DEPT_INACTIVE:"Department already inactive",
+    DOCTOR_DEPT_CANNOT: "Doctor department cannot be deleted.",
+    DEPT_INACTIVE: "Department already inactive",
   },
   SPECIALIZATION: {
     SPEC_CREATED: "Specialization Created Succesfully",
@@ -117,7 +130,7 @@ export const MESSAGES = {
     SPEC_FETCHED: "Specialization fetched Successfully",
     SPEC_UPDATED: "Specialization is updated",
     SPEC_DELETED: "Specialization deleted Successfully",
-    SPEC_INACTIVE:"Specialization already inactive",
+    SPEC_INACTIVE: "Specialization already inactive",
   },
   HOSP_STAFF: {
     HOSP_STAFF_CREATED: "Hospital staff Created Succesfully",
@@ -145,9 +158,13 @@ export const MESSAGES = {
     BLOODBANK_UPDATED: "Blood Bank is updated",
     BLOODBANK_DELETED: "Blood Bank deleted Successfully",
     BLOODTYPE_EXISTS: "Blood type already exists. Please update instead.",
-    AVAIL_UNITS_NOT_ZERO_NEGATIVE: "Available units cannot be Zero or negative."
+    AVAIL_UNITS_NOT_ZERO_NEGATIVE: "Available units cannot be Zero or negative.",
+    AVAIL_UNITS_CANNOT_EXCEED_HUNDRED: "Available units cannot exceed 100",
+    INCORRECT_UNITS: "Incorrect Units",
+    DATE_CANNOT_PAST: "Date cannot be in the past",
+    RESET_TO_ZERO: "Blood stock reset to 0 successfully"
   },
-  BLOODBANK_REQ:{
+  BLOODBANK_REQ: {
     BLOODBANK_REQ_CREATED: "Blood Bank Request Created Succesfully",
     BLOODBANK_REQ_EXISTS: "Blood Bank Request already exists",
     BLOODBANK_REQ_NAME_REQUIRED: "Blood Bank Request name is required",
@@ -157,9 +174,28 @@ export const MESSAGES = {
     BLOODBANK_REQ_FETCHED: "Blood Bank Request fetched Successfully",
     BLOODBANK_REQ_UPDATED: "Blood Bank Request is updated",
     BLOODBANK_REQ_DELETED: "Blood Bank Request deleted Successfully",
+    CANNOT_CREATE: "Cannot create blood request for this appointment status",
+    INSUFFICIENT_BLOOD_UNITS: "Insufficient blood units available"
   },
-PAYMENT:{
- PAYMENT_CREATED: "Payment Created Succesfully",
+  BLOODBANKDONOR: {
+    BLOODBANKDONOR_CREATED: "Blood Bank Donor Created Succesfully",
+    BLOODBANKDONOR_EXISTS: "Blood Bank Donor already exists",
+    BLOODBANKDONOR_NAME_REQUIRED: "Blood Bank Donor name is required",
+    BLOODBANKDONORS_FETCHED: "Blood Bank Donors fetched Successfully",
+    INVALID_BLOODBANKDONOR_ID: "Invalid Blood Bank Donor ID",
+    BLOODBANKDONOR_NOT_FOUND: "Blood Bank Donor not found",
+    BLOODBANKDONOR_FETCHED: "Blood Bank Donor fetched Successfully",
+    BLOODBANKDONOR_TYPE_REQUIRED: "Blood Bank Donor Type is required!",
+    BLOODBANKDONOR_UPDATED: "Blood Bank Donor is updated",
+    BLOODBANKDONOR_DELETED: "Blood Bank Donor deleted Successfully",
+    BLOODTYPE_EXISTS: "Blood type already exists. Please update instead.",
+    AVAIL_UNITS_NOT_ZERO_NEGATIVE: "Available units cannot be Zero or negative.",
+    AVAIL_UNITS_CANNOT_EXCEED_HUNDRED: "Available units cannot exceed 100",
+    INCORRECT_UNITS: "Incorrect Units",
+    DATE_CANNOT_PAST: "Date cannot be in the past",
+  },
+  PAYMENT: {
+    PAYMENT_CREATED: "Payment Created Succesfully",
     PAYMENT_EXISTS: "Payment already exists",
     PAYMENT_NAME_REQUIRED: "Payment name is required",
     PAYMENTS_FETCHED: "Payments fetched Successfully",
@@ -168,10 +204,13 @@ PAYMENT:{
     PAYMENT_FETCHED: "Payment fetched Successfully",
     PAYMENT_UPDATED: "Payment is updated",
     PAYMENT_DELETED: "Payment deleted Successfully",
-    INVALID_AMT:"Invalid Amount",
-},
-APPOINTMENT:{
- APPOINTMENT_CREATED: "Appointment Created Succesfully",
+    INVALID_AMT: "Invalid Amount",
+    PAYMENT_APPOINTMENT_CONFIRM: "Payment successful and appointment confirmed",
+    PAYMENT_CANCELLED_FAILED: "Payment cancelled or failed",
+    PAYMENT_ID_REQUIRED: "Payment ID is required"
+  },
+  APPOINTMENT: {
+    APPOINTMENT_CREATED: "Appointment Created Succesfully",
     APPOINTMENT_EXISTS: "Appointment already exists",
     APPOINTMENT_REQUIRED: "Appointment name is required",
     APPOINTMENTS_FETCHED: "Appointments fetched Successfully",
@@ -180,14 +219,15 @@ APPOINTMENT:{
     APPOINTMENT_FETCHED: "Appointment fetched Successfully",
     APPOINTMENT_UPDATED: "Appointment is updated",
     APPOINTMENT_DELETED: "Appointment deleted Successfully",
-    INVALID_AMT:"Invalid Amount Value",
-    ALREADY_EXIST:"An appointment already exists for this registration",
-    INVALID_DATE_TIME:"Invalid date or time format",
+    INVALID_AMT: "Invalid Amount Value",
+    ALREADY_EXIST: "An appointment already exists for this registration",
+    INVALID_DATE_TIME: "Invalid date or time format",
     CANNOT_SCHEDULE_PAST: "Cannot schedule an appointment in the past",
-    TIME_FORMAT:"Time must be in HH:mm (24-hour) format",
-    STAFF_ALREADY_APPOINTMENT:"This staff member already has an appointment at this date and time",
-    SCHEDULED_CONFIRMED_APPOINTMENT:"Only scheduled,confirmed,missed or canccelled appointments can be deleted",
-    AMOUNT_REQUIRED:"Amount is required",
-    
-}   
+    TIME_FORMAT: "Time must be in HH:mm (24-hour) format",
+    STAFF_ALREADY_APPOINTMENT: "This staff member already has an appointment at this date and time",
+    SCHEDULED_CONFIRMED_APPOINTMENT: "Only scheduled,confirmed,missed or canccelled appointments can be deleted",
+    AMOUNT_REQUIRED: "Amount is required",
+    ALREADY_APPOINTMENT: "Patient already has an appointment on this date."
+
+  }
 };

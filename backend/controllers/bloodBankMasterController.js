@@ -11,44 +11,44 @@ import bloodBankModel from "../models/BloodBankMaster.js";
 // @access Admin/staff 
 export const createBloodBank = async (req, res) => {
     try {
-        const { blood_type, available_unit } = req.body
-        // Check duplicate entry
+        const { blood_type, available_unit } = req.body;
         const existing = await bloodBankModel.findOne({ blood_type });
+
         if (existing) {
-            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.BLOODBANK.BLOODTYPE_EXISTS);
+            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.BLOODBANK.BLOODBANK_EXISTS);
         }
+
         // Validate available units
         if (available_unit <= 0) {
             return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.BLOODBANK.AVAIL_UNITS_NOT_ZERO_NEGATIVE);
         }
-        // to create bloodbank
+        if (available_unit > 100) {
+            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.BLOODBANK.AVAIL_UNITS_CANNOT_EXCEED_HUNDRED);
+        }
+
         const bloodBank = await bloodBankModel.create({
             blood_type,
-            available_unit
+            available_unit,
         });
+
         return successResponse(
             res,
             STATUS.OK,
-            {
-                _id: bloodBank._id,
-                blood_type: bloodBank.blood_type,
-                available_unit: bloodBank.available_unit
-            },
+            { bloodBank },
             MESSAGES.BLOODBANK.BLOODBANK_CREATED
-        )
-    }
-    catch (error) {
+        );
+    } catch (error) {
         console.error("create BLOOD BANK Error:", error);
-        return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
+        return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR);
     }
-}
+};
+
 
 // @route   GET /api/bloodBank
 // @desc    Get all blood bank 
 // @access Admin/staff 
 export const getBloodBank = async (req, res) => {
     try {
-        // To find All Bloodbanks
         const bloodBank = await bloodBankModel.find()
         return successResponse(
             res,
@@ -60,6 +60,7 @@ export const getBloodBank = async (req, res) => {
         )
     }
     catch (error) {
+        console.error("get BLOOD BANK Error:", error);
         return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 }
@@ -79,6 +80,7 @@ export const getBloodBankById = async (req, res) => {
         if (!blood_Bank) {
             return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.BLOODBANK.BLOODBANK_NOT_FOUND);
         }
+
         return successResponse(
             res,
             STATUS.OK,
@@ -87,97 +89,145 @@ export const getBloodBankById = async (req, res) => {
         )
     }
     catch (error) {
-
+        console.error("create BLOOD BANK Error:", error);
         return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 }
 
 // @route   PUT /api/bloodBank/update/:id
-// @desc    Update blood bank 
-// @access Admin/staff 
+// @desc    Update blood bank (partial update allowed)-master stock adjustment- replace the old stock
+// @access Admin
 export const updateBloodBank = async (req, res) => {
     try {
-        const { id } = req.params
+        const { id } = req.params;
         const { blood_type, available_unit } = req.body;
 
         // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.BLOODBANK.INVALID_BLOODBANK_ID);
-        }
-        // Validate available units
-        if (available_unit <= 0) {
-            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.BLOODBANK.AVAIL_UNITS_NOT_ZERO_NEGATIVE);
-        }
-        // Check if blood_type is provided
-        if (!blood_type || !blood_type.trim()) {
-            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.BLOODBANK.BLOODBANK_TYPE_REQUIRED);
+            return errorResponse(
+                res,
+                STATUS.BAD_REQUEST,
+                MESSAGES.BLOODBANK.INVALID_BLOODBANK_ID
+            );
         }
 
-        // Check if Bloodbank exists
-        const bloodBank = await bloodBankModel.findById(id);
-        if (!bloodBank) {
-            return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.BLOODBANK.BLOODBANK_NOT_FOUND);
+        // Check if exists
+        const existing = await bloodBankModel.findById(id);
+        if (!existing) {
+            return errorResponse(
+                res,
+                STATUS.NOT_FOUND,
+                MESSAGES.BLOODBANK.BLOODBANK_NOT_FOUND
+            );
         }
 
-        const normalizedBloodType = blood_type.trim().toUpperCase();
+        // Prepare update data
+        const updateData = {};
 
-        // Check duplicates
-        const existing_bloodBank = await bloodBankModel.findOne({
-            blood_type: normalizedBloodType,
-            _id: { $ne: id }
-        });
+        // Validate & update blood_type if provided
+        if (blood_type) {
+            const existingType = await bloodBankModel.findOne({ blood_type });
 
-        if (existing_bloodBank) {
-            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.BLOODBANK.BLOODBANK_EXISTS);
+            // Prevent duplicate master entries for same blood type
+            if (existingType && existingType._id.toString() !== id.toString()) {
+                return errorResponse(
+                    res,
+                    STATUS.BAD_REQUEST,
+                    MESSAGES.BLOODBANK.BLOODTYPE_EXISTS
+                );
+            }
+
+            updateData.blood_type = blood_type;
         }
 
-        // Update bloodbank
-        bloodBank.blood_type = normalizedBloodType;
-        bloodBank.available_unit = available_unit;
+        // Validate & update units if provided
+        if (available_unit !== undefined) {
+            if (available_unit < 0) {
+                return errorResponse(
+                    res,
+                    STATUS.BAD_REQUEST,
+                    MESSAGES.BLOODBANK.AVAIL_UNITS_NOT_ZERO_NEGATIVE
 
-        const updatedbloodBank = await bloodBank.save();
+                );
+            }
+
+            if (available_unit > 100) {
+                return errorResponse(
+                    res,
+                    STATUS.BAD_REQUEST,
+                    MESSAGES.BLOODBANK.AVAIL_UNITS_CANNOT_EXCEED_HUNDRED
+
+                );
+            }
+
+            updateData.available_unit = available_unit;
+        }
+
+        // Update master record
+        const updated = await bloodBankModel.findByIdAndUpdate(
+            id,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        );
 
         return successResponse(
             res,
             STATUS.OK,
-            { bloodBank: updatedbloodBank },
+            updated,
             MESSAGES.BLOODBANK.BLOODBANK_UPDATED
         );
+
+    } catch (error) {
+        console.error("Update BLOOD BANK Error:", error);
+        return errorResponse(
+            res,
+            STATUS.INTERNAL_SERVER_ERROR,
+            MESSAGES.SERVICE_ERROR
+        );
     }
-    catch (error) {
-        console.log("error:", error)
-        // Check for Mongoose validation error
-        if (error.name === "ValidationError") {
-            const messages = Object.values(error.errors).map(err => err.message);
-            return errorResponse(res, STATUS.BAD_REQUEST, messages.join(", "));
-        }
-        return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
-    }
-}
+};
 
 // @route   DELETE /api/bloodBank/delete/:id
 // @desc    Delete blood bank 
 // @access Admin/staff 
 export const deleteBloodBank = async (req, res) => {
     try {
-        const { id } = req.params
+        const { id } = req.params;
+
+        // Validate ID
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.BLOODBANK.INVALID_BLOODBANK_ID);
+            return errorResponse(
+                res,
+                STATUS.BAD_REQUEST,
+                MESSAGES.BLOODBANK.INVALID_BLOODBANK_ID
+            );
         }
-        // to delete
-        const bloodBank = await bloodBankModel.findByIdAndDelete(id)
+
+        // Find blood group
+        const bloodBank = await bloodBankModel.findById(id);
+
         if (!bloodBank) {
-            return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.BLOODBANK.BLOODBANK_NOT_FOUND);
+            return errorResponse(
+                res,
+                STATUS.NOT_FOUND,
+                MESSAGES.BLOODBANK.BLOODBANK_NOT_FOUND
+            );
         }
+
+        // Reset stock to zero
+        bloodBank.available_unit = 0;
+
+        await bloodBank.save();
+
         return successResponse(
             res,
             STATUS.OK,
             { bloodBank },
-            MESSAGES.BLOODBANK.BLOODBANK_DELETED
-        )
+            MESSAGES.BLOODBANK.RESET_TO_ZERO
+        );
     }
     catch (error) {
-        console.error("delete Bloodbank Error:", error);
+        console.error("DELETE BLOOD BANK Error:", error);
         return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 }

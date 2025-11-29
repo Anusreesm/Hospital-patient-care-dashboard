@@ -22,7 +22,6 @@ const regSchema= new mongoose.Schema(
     },
     medical_condition: {
       type: String,
-      required: true
     },
     allergies: {
       type: String
