@@ -20,7 +20,7 @@ export const GetAllAppointment = async () => {
         const res = await fetch(`${API_URL}/`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(),
+           
         });
         return await res.json();
     } catch (err) {

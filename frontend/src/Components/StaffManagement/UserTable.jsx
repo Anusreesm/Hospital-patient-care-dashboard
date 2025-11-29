@@ -4,6 +4,8 @@ import UserRow from "./UserRow";
 import { GetAllUsers } from "../../api/AuthApi";
 import toast from "react-hot-toast";
 import HospStaffReg from "../../Pages/Admin/UserManagement/hospStaffRegister";
+import PatientCreate from "../../Pages/Common/patientManagement/patientCreate";
+import PageWrapper from "../pageWrappers";
 
 const UserTable = ({ staff = [] }) => {
     const [users, setUsers] = useState([]);
@@ -14,6 +16,7 @@ const UserTable = ({ staff = [] }) => {
     const fetchUsers = async () => {
         try {
             const res = await GetAllUsers();
+             console.log("USER SAMPLE:", res.data?.users?.[0]); 
             if (Array.isArray(res?.data?.users)) {
                 setUsers(res.data.users);
             } else {
@@ -30,7 +33,7 @@ const UserTable = ({ staff = [] }) => {
         fetchUsers();
     }, []);
 
-       // Sync filtered data from parent component
+    // Sync filtered data from parent component
     useEffect(() => {
         if (staff?.length) {
             setUsers(staff);
@@ -52,18 +55,19 @@ const UserTable = ({ staff = [] }) => {
 
     };
     return (
-        <div className="bg-white rounded-xl shadow-sm p-3 sm:p-4 w-full">
-            <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-1">
+        <PageWrapper>
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-3 sm:p-4 w-full">
+            <h3 className="text-base sm:text-lg font-medium text-gray-800 dark:text-gray-100 mb-1">
                 Users ({users.length})
             </h3>
-            <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-3 sm:mb-4">
                 Manage user accounts
             </p>
 
             <div className="overflow-x-auto">
                 <table className="min-w-[600px] sm:min-w-full text-sm text-left">
                     <thead>
-                        <tr className="border-b text-gray-600 text-xs sm:text-sm">
+                        <tr className="border-b border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
                             <th className="py-2">User</th>
                             <th>Role</th>
                             <th>Status</th>
@@ -72,7 +76,7 @@ const UserTable = ({ staff = [] }) => {
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="text-gray-800 dark:text-gray-200">
                         {users.length > 0 ? (
                             users.map((u) => (
                                 <UserRow
@@ -86,12 +90,12 @@ const UserTable = ({ staff = [] }) => {
                                     lastLoginAt={u.lastLoginAt}
                                     onDelete={handleDelete}
                                     onEdit={handleEdit}
-                                    
+
                                 />
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="6" className="text-center py-4 text-gray-500">
+                                <td colSpan="6" className="text-center py-4 text-gray-500 dark:text-gray-400">
                                     No users found
                                 </td>
                             </tr>
@@ -99,8 +103,22 @@ const UserTable = ({ staff = [] }) => {
                     </tbody>
                 </table>
             </div>
+            {showModal && selectedStaff && (
+                <>
+                  
+                        <HospStaffReg
+                            mode="update"
+                            existingStaff={selectedStaff}
+                            onClose={(updated) => {
+                                setShowModal(false);
+                                if (updated) handleUpdateSuccess();
+                            }}
+                        />
+                
+                </>
+            )}
 
-            {/* Modal  */}
+            {/* Modal 
             {showModal && selectedStaff && (
                 <HospStaffReg
                     mode="update"
@@ -110,8 +128,9 @@ const UserTable = ({ staff = [] }) => {
                         if (updated) handleUpdateSuccess(); // Refresh table instantly
                     }}
                 />
-            )}
+            )} */}
         </div>
+        </PageWrapper>
     );
 };
 

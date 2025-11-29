@@ -6,15 +6,15 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 
 const badgeColor = {
-  admin: "bg-red-100 text-red-700",
-  doctor: "bg-green-200 text-gray-700",
-  staff: "bg-violet-200 text-gray-700",
-  patient: "bg-orange-100 text-gray-700",
+  admin: "bg-red-100 text-red-700 dark:bg-red-100 dark:text-red-700",
+  doctor: "bg-green-200 text-gray-700 dark:bg-green-200 dark:text-black",
+  staff: "bg-violet-200 text-gray-700 dark:bg-violet-200 dark:text-black",
+  patient: "bg-orange-100 text-gray-700 dark:bg-orange-100 dark:text-black",
 };
 
 const statusColor = {
-  active: "bg-black text-white",
-  inactive: "bg-gray-200 text-gray-600",
+  active: "bg-black text-white dark:bg-gray-600 dark:text-white",
+  inactive: "bg-gray-200 text-gray-600 dark:bg-white-600 dark:text-black ",
 };
 
 const UserRow = ({
@@ -107,15 +107,15 @@ const UserRow = ({
   };
 
   return (
-    <tr className="border-b last:border-none hover:bg-gray-50 text-xs sm:text-sm">
+    <tr className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-xs sm:text-sm">
       {/* User Info */}
       <td className="py-3 flex items-center space-x-2 sm:space-x-3">
-        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs sm:text-sm font-semibold uppercase">
+       <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs sm:text-sm font-semibold uppercase text-gray-700 dark:text-gray-200">
           {name?.charAt(0) || "?"}
         </div>
         <div className="truncate max-w-[100px] sm:max-w-none">
-          <p className="font-medium text-gray-800 truncate">{name}</p>
-          <p className="text-gray-500 text-[10px] sm:text-xs truncate">{email}</p>
+          <p className="font-medium text-gray-800 dark:text-gray-100 truncate">{name}</p>
+          <p className="text-gray-500 dark:text-gray-400 text-[10px] sm:text-xs truncate">{email}</p>
         </div>
       </td>
 
@@ -138,16 +138,17 @@ const UserRow = ({
       </td>
 
       {/* Dates */}
-      <td className="text-gray-600 whitespace-nowrap">{formatDateTime(created_at)}</td>
-      <td className="text-gray-600 whitespace-nowrap">{formatDateTime(lastLoginAt)}</td>
+      <td className="text-gray-600 dark:text-gray-400 whitespace-nowrap">{formatDateTime(created_at)}</td>
+      <td className="text-gray-600 dark:text-gray-400 whitespace-nowrap">{formatDateTime(lastLoginAt)}</td>
 
       {/* Actions */}
       <td className="flex flex-row gap-4">
-        {role?.toLowerCase() !== "admin" && (
+       {role?.toLowerCase() !== "admin" && role?.toLowerCase() !== "patient" &&(
           <>
         <button
           title="Update User"
           onClick={() => handleEdit({ _id: id, name, email, role, status })}
+           className="bg-gray-500 dark:bg-gray-700 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm"
           disabled={loading}
         >
           <i className="fa-regular fa-pen-to-square"></i>
@@ -155,6 +156,7 @@ const UserRow = ({
         <button
           title="Delete user"
           onClick={() => handleDelete(id)}
+           className="bg-gray-500 dark:bg-gray-700 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
           disabled={loading}
         >
           <i className="fa-solid fa-trash"></i>

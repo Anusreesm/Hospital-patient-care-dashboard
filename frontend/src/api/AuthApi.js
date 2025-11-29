@@ -56,3 +56,71 @@ export const getUserById = async (id) => {
    const result = await res.json()
    return result
 }
+
+
+export const changeUserPw = async (id, data) => {
+   try {
+      const res = await fetch(`http://localhost:3000/api/users/password/${id}`, {
+         method: "PATCH",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      return result;
+   } catch (error) {
+      return {
+         success: false,
+         message: "Network error",
+         error: error.message
+      };
+   }
+};
+
+
+export const forgotPw = async (data) => {
+  try {
+    const res = await fetch(`http://localhost:3000/api/users/forgotPassword`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await res.json();
+    return result;
+
+  } catch (error) {
+    return {
+      success: false,
+      message: "Network error",
+      error: error.message,
+    };
+  }
+};
+
+
+export const resetPw = async (token, data) => {
+  try {
+    const res = await fetch(`http://localhost:3000/api/users/resetPassword/${token}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),   // { password: "newPassword" }
+    });
+
+    const result = await res.json();
+    return result;
+
+  } catch (error) {
+    return {
+      success: false,
+      message: "Network error",
+      error: error.message,
+    };
+  }
+};

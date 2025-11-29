@@ -20,3 +20,19 @@ export const verifyDelete = async (itemType = "item") => {
   // Return true if confirmed
   return result.isConfirmed;
 };
+
+
+export const verifyComplete = async (itemType = "item") => {
+  const result = await Swal.fire({
+    title: `Please verify ${itemType} Marking as completed cannot be undone.`,
+    icon: "success", // Green check icon
+    showCancelButton: true,
+    confirmButtonText: "Yes, update!",
+    cancelButtonText: "Cancel",
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+  });
+
+  // Return true if confirmed
+  return result.isConfirmed;
+};

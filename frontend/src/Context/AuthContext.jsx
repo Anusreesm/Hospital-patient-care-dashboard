@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode"
 import { createContext, useContext, useEffect, useState } from "react"
 
+
 const AuthContext = createContext()
 const getDecodeToken = (token) => {
     try {
@@ -15,6 +16,7 @@ const getDecodeToken = (token) => {
 // provider component
 // to wrap  app and give access to values put inside AuthContext.Provider.
 export const AuthProvider = ({ children }) => {
+   
     const storedToken = localStorage.getItem("token");
     const decoded = getDecodeToken(storedToken);
 // Reads token from localStorage on page reload.
@@ -57,6 +59,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("token");
         setAuth({ token: null, userRole: null, userId: null });
     };
+   
 
     console.log(auth, ":auth")
     return (
@@ -64,6 +67,7 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider value={{
             LoginHandler,
             LogoutHandler,
+           
             user: { id: auth.userId, name: auth.userName, role: auth.userRole },
             ...auth
 

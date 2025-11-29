@@ -6,11 +6,17 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { GetAllUsers } from "../../../api/AuthApi";
 import Input from "../../../Components/Forms/Input";
+import PatientCreateForm from "../../Common/patientManagement/patientCreateForm";
+import HospStaffForm from "./HospStaffForm";
+import PageWrapper from "../../../Components/pageWrappers";
 
 const HospStaff = () => {
     const [staff, setStaff] = useState([])
-   const [filterStatus, setFilterStatus] = useState("All Roles");
+    const [filterStatus, setFilterStatus] = useState("All Roles");
     const [filteredStaff, setFilteredStaff] = useState([]);
+    const [editData, setEditData] = useState(null);
+
+    const closeModal = () => setEditData(null);
     // to find total
     const [totals, setTotals] = useState({
         users: 0,
@@ -25,6 +31,7 @@ const HospStaff = () => {
         const fetchUsers = async () => {
             try {
                 const res = await GetAllUsers();
+
                 console.log(res.data.users[0]);
                 if (Array.isArray(res?.data?.users)) {
                     const users = res.data.users;
@@ -77,74 +84,103 @@ const HospStaff = () => {
 
 
     return (
-        <div className="flex flex-col sm:flex-row min-h-screen bg-gray-50">
-            <Sidebar />
+        <>
 
-            {/* Main content */}
-            <div className="flex-1 flex flex-col">
-                <Navbar />
+            <PageWrapper>
+                {/* ---------- MODAL SECTION ---------- */}
+                {editData && (
+                    <>
+                        {editData.role?.toLowerCase() === "patient" ? (
 
-                {/* Scrollable area */}
-                <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
-                    {/* Header */}
-                    <div>
-                        <h1 className="text-lg sm:text-2xl font-semibold text-gray-800">
-                            User Management
-                        </h1>
-                        <p className="text-gray-500 text-sm sm:text-base">
-                            Manage hospital users, roles, and permissions
-                        </p>
-                    </div>
+                            <PatientCreateForm
+                                mode="update"
+                                existingPatient={editData}
+                                onClose={closeModal}
+                            />
+                        ) : (
+                            <HospStaffForm
+                                mode="update"
+                                existingStaff={editData}
+                                onClose={closeModal}
+                            />
+                        )}
+                    </>
+                )}
+                {/* ---------- END MODAL ---------- */}
+                <div className="flex flex-col sm:flex-row min-h-screen">
+                    <Sidebar />
 
-                    {/* totals */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-                        {stats.map((item) => (
-                            <div key={item.label} className="p-4 rounded-lg shadow bg-white">
-                                <p className="font-semibold">{item.label}</p>
-                                <p className={`text-2xl font-bold ${item.color}`}>{item.value}</p>
+                    {/* Main content */}
+                    <div className="flex-1 flex flex-col">
+                        <Navbar />
+
+                        {/* Scrollable area */}
+                        <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
+                            {/* Header */}
+                            <div>
+                                <h1 className="text-lg sm:text-2xl font-semibold text-gray-800 dark:text-gray-100">
+                                    User Management
+                                </h1>
+                                <p className="text-gray-500 dark:text-gray-300 text-sm sm:text-base">
+                                    Manage hospital users, roles, and permissions
+                                </p>
                             </div>
-                        ))}
-                    </div>
 
-                    {/* Search & Filter */}
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white p-3 sm:p-4 rounded-xl shadow-sm gap-3">
-                        {/* <Input
-                            type="text"
-                            placeholder="Search users..."
-                            className="w-full sm:max-w-md border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                             
-                        /> */}
+                            {/* totals */}
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+                                {stats.map((item) => (
+                                    <div key={item.label} className="p-4 rounded-lg shadow 
+                                               bg-white dark:bg-gray-800 
+                                               text-gray-800 dark:text-gray-100">
+                                        <p className="font-semibold">{item.label}</p>
+                                        <p className={`text-2xl font-bold ${item.color}`}>{item.value}</p>
+                                    </div>
+                                ))}
+                            </div>
 
-                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-                            <select 
-                            className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 text-sm"
-                            value={filterStatus}
-                            onChange={(e)=> setFilterStatus(e.target.value)}
-                            >
-                                <option>All Roles</option>
-                                <option>Admin</option>
-                                <option>Doctor</option>
-                                <option>Staff</option>
-                                <option>Patient</option>
-                            </select>
+                            {/* Search & Filter */}
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between 
+                                        bg-white dark:bg-gray-800 
+                                        p-3 sm:p-4 rounded-xl shadow-sm gap-3">
 
-                            <NavLink
-                                to="/admin/staff/register"
-                                className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-center text-sm"
-                            >
-                                + create new user
-                            </NavLink>
+
+                                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                                    <select
+                                        className="border border-gray-300 dark:border-gray-600 
+                                               bg-white dark:bg-gray-700 
+                                               text-gray-800 dark:text-gray-100
+                                               rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 text-sm"
+                                        value={filterStatus}
+                                        onChange={(e) => setFilterStatus(e.target.value)}
+                                    >
+                                        <option>All Roles</option>
+                                        <option>Admin</option>
+                                        <option>Doctor</option>
+                                        <option>Staff</option>
+                                        <option>Patient</option>
+                                    </select>
+
+                                    <NavLink
+                                        to="/admin/staff/register"
+                                        className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-center text-sm"
+                                    >
+                                        + create new user
+                                    </NavLink>
+                                </div>
+                            </div>
+
+                            {/* Table */}
+                            <div className="overflow-x-auto  bg-white dark:bg-gray-800 
+                                        rounded-lg shadow p-2">
+                                <UserTable staff={filteredStaff} />
+                            </div>
                         </div>
                     </div>
-
-                    {/* Table */}
-                    <div className="overflow-x-auto">
-                        <UserTable staff={filteredStaff} />
-                    </div>
                 </div>
-            </div>
-        </div>
+            </PageWrapper>
+        </>
     );
+
 };
 
 export default HospStaff;

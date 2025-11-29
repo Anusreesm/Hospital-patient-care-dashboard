@@ -2,7 +2,7 @@ import { useState } from "react"
 import Button from "../../Components/Button"
 import Input from "../../Components/Forms/Input"
 import { LoginUser } from "../../api/AuthApi"
-import { useNavigate } from "react-router-dom"
+import { Link, NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../../Context/AuthContext"
 import { showInvalidCredentials } from "../../Utils/Alerts/ErrorAlert"
 
@@ -16,7 +16,7 @@ const Login = () => {
     const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-   
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -24,8 +24,8 @@ const Login = () => {
         try {
             const result = await LoginUser({ email, password })
             if (!result.success) {
-                showInvalidCredentials(); 
-                return; 
+                showInvalidCredentials();
+                return;
             }
 
             if (result.success) {
@@ -47,7 +47,7 @@ const Login = () => {
                     navigate('/patient')
                 }
                 else {
-                    navigate('/login')
+                    navigate('/')
                 }
             }
 
@@ -59,8 +59,8 @@ const Login = () => {
 
     return (
         <>
-            <div className="min-h-screen flex items-center justify-center bg-gray-100 ">
-                <div className="flex flex-col items-center justify-center p-18 ">
+            <div className="min-h-screen flex items-center justify-center bg-gray-100">
+                <div className="flex flex-col items-center justify-center p-6">
                     <div className="flex items-center gap-2">
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">MedTech HMS</h1>
                     </div>
@@ -91,9 +91,20 @@ const Login = () => {
                                 />
                             </div>
                         </div>
-                        <Button type="submit"  >
+                        <div className="flex justify-between items-center mb-4">
+                            <NavLink
+                                to="/forgot-password"
+                                className="text-sm text-blue-600 hover:underline font-medium"
+                            >
+                                Forgot Password?
+                            </NavLink>
+
+                        </div>
+
+                        <Button type="submit">
                             Sign In
                         </Button>
+
                     </form>
 
                     <div className="max-w-sm mx-auto bg-white rounded-lg shadow-md border border-gray-200 p-6 mt-8">
@@ -103,13 +114,13 @@ const Login = () => {
                                 <span className="font-medium">Admin:</span> admin@gmail.com / admin
                             </li>
                             <li className="text-gray-700">
-                                <span className="font-medium">Staff:</span> staff@gmail.com / 029fabb0
+                                <span className="font-medium">Staff:</span> staff@gmail.com / demo123
                             </li>
                             <li className="text-gray-700">
-                                <span className="font-medium">Patient:</span> patient@gmail.com / Password1223
+                                <span className="font-medium">Patient:</span> patient@gmail.com / demo123
                             </li>
                             <li className="text-gray-700">
-                                <span className="font-medium">Doctor:</span> doctor@gmail.com / bc622727
+                                <span className="font-medium">Doctor:</span> doctor@gmail.com / demo123
                             </li>
                         </ul>
                     </div>

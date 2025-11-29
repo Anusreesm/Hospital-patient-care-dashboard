@@ -24,181 +24,351 @@ import AppointmentManagement from './Pages/Common/AppointmentManagement/Appointm
 import AppointmentCreate from './Pages/Common/AppointmentManagement/AppointmentCreate'
 import PatientManagement from './Pages/Common/patientManagement/patientManagement'
 import PaymentManagement from './Pages/Common/PaymentManagement/Payment'
+import SuccessPage from './Pages/Common/PaymentManagement/Success'
+import CancelPage from './Pages/Common/PaymentManagement/Cancel'
+import PatientCreate from './Pages/Common/patientManagement/patientCreate'
+import BloodBankManagement from './Pages/Common/BloodBankManagement/bloodBankManagement'
+import CreateDonation from './Pages/Common/BloodBankManagement/Donation/createDonation'
+import CreateRequest from './Pages/Common/BloodBankManagement/Requests/createRequest'
+import BloodStockAdj from './Pages/Settings/BloodStockAdj'
+import ChangeUserPassword from './Pages/Common/Profile/ChangeUserPassword'
+import ForgotPassword from './Pages/Auth/ForgotPassword'
+import ResetPassword from './Pages/Auth/ResetPassword'
 
 const App = () => {
   const { token, userRole } = useAuth();
   return (
-
-    <BrowserRouter>
-      {/* Toaster should be here */}
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-      />
-      <Routes>
-        {/* if token exist redirect to their dashboard else go back to login */}
-        <Route path="/login" element={
-          token ? (
-            userRole === 'admin' ? (
-              <Navigate to='/admin' />
-            ) : userRole === 'staff' ? (
-              <Navigate to='/staff' />
-            ) : userRole === 'doctor' ? (
-              <Navigate to='/doctor' />
-            ) : userRole === 'patient' ? (
-              <Navigate to='/patient' />
-            ) : (
-              <Login />
-            )
-
-
-          ) : (
-            <Login />
-          )
-        } />
-
-
-
-        {/* Admin dashboard and admin only */}
-
-        <Route path="/admin" element={
-          <ProtectedRoutes allowedRoles={['admin']}  >
-            <AdminDashboard />
-          </ProtectedRoutes>
-        } />
-
-        {/* hospital staff register */}
-        <Route
-          path="/admin/staff"
-          element={
-            <ProtectedRoutes allowedRoles={['admin']}>
-              <HospStaff />
-            </ProtectedRoutes>
-          }
+    <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white transition-colors duration-300">
+      <BrowserRouter>
+        {/* Toaster should be here */}
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
         />
+        {/* =======================
+            PUBLIC ROUTES (NO SIDEBAR)
+        ======================== */}
+        {!token && (
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+          </Routes>
+        )}
 
-        {/* hospital staff register */}
-        <Route
-          path="/admin/staff/register"
-          element={
-            <ProtectedRoutes allowedRoles={['admin']}>
-              <HospStaffReg />
-            </ProtectedRoutes>
-          }
-        />
-        {/* settings */}
-        <Route
-          path="/admin/settings"
-          element={
-            <ProtectedRoutes allowedRoles={['admin']}>
-              <SettingsPage />
-            </ProtectedRoutes>
-          }
-        />
-
-        {/* department */}
-        <Route
-          path="/admin/settings/dept"
-          element={
-            <ProtectedRoutes allowedRoles={['admin']}>
-              <DeptMaster />
-            </ProtectedRoutes>
-          }
-        />
-
-        {/* Specialization master */}
-        <Route
-          path="/admin/settings/specz"
-          element={
-            <ProtectedRoutes allowedRoles={['admin']}>
-              <SpeczMaster />
-            </ProtectedRoutes>
-          }
-        />
+        {/* =======================
+            AUTHENTICATED ROUTES (WITH SIDEBAR)
+        ======================== */}
+        {token && (
+          <div className="sm:ml-64">
+            <Routes>
+              {/* if token exist redirect to their dashboard else go back to login */}
+              <Route path="/" element={
+                token ? (
+                  userRole === 'admin' ? (
+                    <Navigate to='/admin' />
+                  ) : userRole === 'staff' ? (
+                    <Navigate to='/staff' />
+                  ) : userRole === 'doctor' ? (
+                    <Navigate to='/doctor' />
+                  ) : userRole === 'patient' ? (
+                    <Navigate to='/patient' />
+                  ) : (
+                    <Login />
+                  )
 
 
-        {/* change user status */}
-        <Route
-          path="/admin/settings/changeUserStatus"
-          element={
-            <ProtectedRoutes allowedRoles={['admin']}>
-              <ChangeUserStatus />
-            </ProtectedRoutes>
-          }
-        />
+                ) : (
+                  <Login />
+                )
+              } />
 
 
-        {/* Staff dashboard */}
+              {/* =============================================
+                ADMIN ROUTES
+        ============================================== */}
+
+              {/* ---------------------------------------------
+            ADMIN DASHBOARD
+        ---------------------------------------------- */}
+
+              <Route path="/admin" element={
+                <ProtectedRoutes allowedRoles={['admin']}  >
+                  <AdminDashboard />
+                </ProtectedRoutes>
+              } />
+
+              {/* ========== USER MANAGEMENT ========== */}
+
+              {/* ---------------------------------------------
+            HOSPITAL STAFF LIST
+        ---------------------------------------------- */}
+              <Route
+                path="/admin/staff"
+                element={
+                  <ProtectedRoutes allowedRoles={['admin']}>
+                    <HospStaff />
+                  </ProtectedRoutes>
+                }
+              />
+
+              {/* ---------------------------------------------
+            HOSPITAL STAFF REGISTRATION
+        ---------------------------------------------- */}
+              <Route
+                path="/admin/staff/register"
+                element={
+                  <ProtectedRoutes allowedRoles={['admin']}>
+                    <HospStaffReg />
+                  </ProtectedRoutes>
+                }
+              />
+              {/* ========== SETTINGS ========== */}
+
+              {/* ---------------------------------------------
+            SETTINGS HOME
+        ---------------------------------------------- */}
+              <Route
+                path="/:userRole/settings"
+                element={
+                  <ProtectedRoutes allowedRoles={['admin', 'staff', 'doctor', 'patient']}>
+                    <SettingsPage />
+                  </ProtectedRoutes>
+                }
+              />
 
 
-        <Route path="/staff" element={
-          <ProtectedRoutes allowedRoles={['admin', 'staff']}>
-            <StaffDashboard />
-          </ProtectedRoutes>
-        } />
+              {/* ---------------------------------------------
+            DEPARTMENT MASTER
+        ---------------------------------------------- */}
+              <Route
+                path="/admin/settings/dept"
+                element={
+                  <ProtectedRoutes allowedRoles={['admin']}>
+                    <DeptMaster />
+                  </ProtectedRoutes>
+                }
+              />
+
+              {/* ---------------------------------------------
+            SPECIALIZATION MASTER
+        ---------------------------------------------- */}
+              <Route
+                path="/admin/settings/specz"
+                element={
+                  <ProtectedRoutes allowedRoles={['admin']}>
+                    <SpeczMaster />
+                  </ProtectedRoutes>
+                }
+              />
+
+
+              {/* ---------------------------------------------
+            CHANGE USER STATUS
+        ---------------------------------------------- */}
+              <Route
+                path="/admin/settings/changeUserStatus"
+                element={
+                  <ProtectedRoutes allowedRoles={['admin']}>
+                    <ChangeUserStatus />
+                  </ProtectedRoutes>
+                }
+              />
+
+
+              {/* COMMON FOR WEVERY USER */}
+              {/* ---------------------------------------------
+            CHANGE PASSWORD
+        ---------------------------------------------- */}
+              <Route
+                path="/:userRole/settings/changeUserPassword"
+                element={
+                  <ProtectedRoutes allowedRoles={['admin', 'staff', 'doctor', 'patient']}>
+                    <ChangeUserPassword />
+                  </ProtectedRoutes>
+                }
+              />
+
+
+              {/* ---------------------------------------------
+            Physical Inventory Update (Blood Bank)
+        ---------------------------------------------- */}
+              <Route
+                path="/admin/settings/bloodStockAdj"
+                element={
+                  <ProtectedRoutes allowedRoles={['admin']}>
+                    <BloodStockAdj />
+                  </ProtectedRoutes>
+                }
+              />
+
+
+              {/* =============================================
+                STAFF ROUTES
+        ============================================== */}
+
+              {/* ---------------------------------------------
+            STAFF DASHBOARD
+        ---------------------------------------------- */}
+
+
+              <Route path="/staff" element={
+                <ProtectedRoutes allowedRoles={['admin', 'staff']}>
+                  <StaffDashboard />
+                </ProtectedRoutes>
+              } />
+
+              {/* =============================================
+                DOCTOR ROUTES
+        ============================================== */}
+
+              {/* ---------------------------------------------
+            DOCTOR DASHBOARD
+        ---------------------------------------------- */}
+
+              <Route path="/doctor" element={
+                <ProtectedRoutes allowedRoles={['admin', 'doctor']}>
+                  <DoctorDashboard />
+                </ProtectedRoutes>
+              } />
+
+
+
+              {/* =============================================
+                PATIENT ROUTES
+        ============================================== */}
+
+              {/* ---------------------------------------------
+            PATIENT DASHBOARD
+        ---------------------------------------------- */}
+
+
+              <Route path="/patient" element={
+                <ProtectedRoutes allowedRoles={['admin', 'patient']}>
+                  <PatientDashboard />
+                </ProtectedRoutes>
+              } />
+
+
+              {/* =============================================
+                ADMIN , STAFF ,DOCTOR- ROUTES
+        ============================================== */}
+
+
+              {/* ========== PATIENT MANAGEMENT ========== */}
+
+
+              {/* ---------------------------------------------
+            PATIENT LIST PAGE
+        ---------------------------------------------- */}
+
+              <Route path='/patientManagement' element={
+                <ProtectedRoutes allowedRoles={['admin', 'staff', 'doctor']}>
+                  <PatientManagement />
+                </ProtectedRoutes>
+              }
+              />
+              {/* ---------------------------------------------
+            PATIENT CREATE PAGE
+        ---------------------------------------------- */}
+              <Route
+                path="/:userRole/patient/create"
+                element={
+                  <ProtectedRoutes allowedRoles={['admin', 'staff', 'doctor']}>
+                    <PatientCreate />
+                  </ProtectedRoutes>
+                }
+              />
+
+              {/* ========== BLOOD BANK MANAGEMENT ========== */}
+
+              {/* ---------------------------------------------
+            BLOOD BANK MAIN PAGE
+        ---------------------------------------------- */}
+              <Route path='/bloodBankManagement' element={
+                <ProtectedRoutes allowedRoles={['admin', 'staff', 'doctor']}>
+                  <BloodBankManagement />
+                </ProtectedRoutes>
+              }
+              />
+
+              {/* ---------------------------------------------
+            BLOOD BANK DONATION CREATION
+        ---------------------------------------------- */}
+              <Route path='/:userRole/bloodBankManagement/createDonation' element={
+                <ProtectedRoutes allowedRoles={['admin', 'staff', 'doctor']}>
+                  <CreateDonation />
+                </ProtectedRoutes>
+              }
+              />
+
+              {/* ---------------------------------------------
+            BLOOD BANK REQUEST CREATION
+        ---------------------------------------------- */}
+              <Route path='/:userRole/bloodBankManagement/createRequest' element={
+                <ProtectedRoutes allowedRoles={['admin', 'staff', 'doctor']}>
+                  <CreateRequest />
+                </ProtectedRoutes>
+              }
+              />
+
+
+              {/* ===================================================
+                ADMIN , STAFF ,DOCTOR,PATIENT(COMMON)- ROUTES
+        =======================================================*/}
 
 
 
 
-        {/* Doctor dashboard */}
 
+              {/* ========== APPOINTMENT MANAGEMENT ========== */}
 
-        <Route path="/doctor" element={
-          <ProtectedRoutes allowedRoles={['admin', 'doctor']}>
-            <DoctorDashboard />
-          </ProtectedRoutes>
-        } />
+              {/* ---------------------------------------------
+            APPOINTMENT LIST PAGE
+        ---------------------------------------------- */}
+              <Route path='/appointmentManagement' element={
+                <ProtectedRoutes allowedRoles={['admin', 'staff', 'doctor', 'patient']}>
+                  <AppointmentManagement />
+                </ProtectedRoutes>
+              }
+              />
+              {/* ---------------------------------------------
+            APPOINTMENT CREATE PAGE(BOOKING)
+        ---------------------------------------------- */}
 
+              <Route
+                path="/:userRole/appointment/create"
+                element={
+                  <ProtectedRoutes allowedRoles={['admin', 'staff', 'patient']}>
+                    <AppointmentCreate />
+                  </ProtectedRoutes>
+                }
+              />
 
+              {/* ========== PAYMENT MANAGEMENT ========== */}
 
-        {/* patient dashboard */}
+              {/* ---------------------------------------------
+            PAYMENT CREATE PAGE
+        ---------------------------------------------- */}
+              <Route
+                path="/:userRole/payment/create"
+                element={
+                  <ProtectedRoutes allowedRoles={['admin', 'staff', 'patient']}>
+                    <PaymentManagement />
+                  </ProtectedRoutes>
+                }
+              />
+              {/* ---------------------------------------------
+            PAYMENT SUCCESS / CANCEL
+        ---------------------------------------------- */}
+              <Route path="/success" element={<SuccessPage />} />
+              <Route path="/cancel" element={<CancelPage />} />
+            </Routes>
+          </div>
+        )}
+      </BrowserRouter>
 
-
-        <Route path="/patient" element={
-          <ProtectedRoutes allowedRoles={['admin', 'patient']}>
-            <PatientDashboard />
-          </ProtectedRoutes>
-        } />
-
-
-        {/* both admin and staff */}
-
-        <Route path='/patientManagement' element={
-          <ProtectedRoutes allowedRoles={['admin', 'staff']}>
-            <PatientManagement />
-          </ProtectedRoutes>
-        }
-        />
-        {/* common */}
-        <Route path='/appointmentManagement' element={
-          <ProtectedRoutes allowedRoles={['admin', 'staff', 'doctor', 'patient']}>
-            <AppointmentManagement />
-          </ProtectedRoutes>
-        }
-        />
-        {/* appointment booking */}
-        <Route
-          path="/:userRole/appointment/create"
-          element={
-            <ProtectedRoutes allowedRoles={['admin', 'staff', 'patient']}>
-              <AppointmentCreate />
-            </ProtectedRoutes>
-          }
-        />
-        {/* payment booking */}
-         <Route
-          path="/:userRole/payment/create"
-          element={
-            <ProtectedRoutes allowedRoles={['admin', 'staff', 'patient']}>
-              <PaymentManagement />
-            </ProtectedRoutes>
-          }
-        />
-
-      </Routes>
-    </BrowserRouter>
-
-
+    </div>
   )
 }
 

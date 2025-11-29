@@ -4,7 +4,7 @@ import AppointRow from "./AppointRow";
 import { GetAllAppointment } from "../../api/AppointmentApi";
 import AppointmentCreate from "../../Pages/Common/AppointmentManagement/AppointmentCreate";
 import { useEffect, useState } from "react";
-
+import PageWrapper from "../pageWrappers";
 const AppointTable = ({ appointment = [] }) => {
 
     const [appointments, setAppointments] = useState([]);
@@ -57,19 +57,19 @@ const AppointTable = ({ appointment = [] }) => {
 
     return (
         <>
-
-            <div className="bg-white rounded-xl shadow-sm p-3 sm:p-4 w-full">
-                <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-1">
+        <PageWrapper>
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-3 sm:p-4 w-full">
+                <h3 className="text-base sm:text-lg font-medium text-gray-800 dark:text-gray-100 mb-1">
                     Appointments ({appointments.length})
                 </h3>
-                <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-3 sm:mb-4">
                     Manage scheduled appointments
                 </p>
                 <div className="overflow-x-auto">
                     {appointments.length > 0 ? (
                         <table className="min-w-[600px] sm:min-w-full text-sm text-left table-fixed">
                             <thead>
-                                <tr className="border-b text-gray-600 text-xs sm:text-sm">
+                                <tr className="border-b border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
                                     <th className="py-2">Patient</th>
                                     <th>Doctor</th>
                                     <th>Date & Time</th>
@@ -79,7 +79,7 @@ const AppointTable = ({ appointment = [] }) => {
                                     <th className="py-2 text-center pr-6 w-[180px]">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody className="text-gray-800 dark:text-gray-200">
                                 {appointments.map((p) => (
                                     <AppointRow
                                         key={p._id}
@@ -92,7 +92,7 @@ const AppointTable = ({ appointment = [] }) => {
                             </tbody>
                         </table>
                     ) : (
-                        <p className="text-center text-gray-500 py-4">
+                        <p className="text-center py-4 text-gray-500 dark:text-gray-400">
                             No appointments found.
                         </p>
                     )}
@@ -110,6 +110,7 @@ const AppointTable = ({ appointment = [] }) => {
 
 
             </div>
+            </PageWrapper>
         </>
     )
 }

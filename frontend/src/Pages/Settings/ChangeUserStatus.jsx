@@ -5,6 +5,7 @@ import Sidebar from "../../Components/Layouts/Sidebar";
 import Navbar from "../../Components/Layouts/Navbar";
 import { verifyDelete } from "../../Utils/Alerts/ErrorAlert";
 import { DeleteItems } from "../../Utils/Alerts/SuccessAlert";
+import PageWrapper from "../../Components/pageWrappers";
 const ChangeUserStatus = () => {
     // to store the list of users 
     const [users, setUsers] = useState([]);
@@ -87,93 +88,118 @@ const ChangeUserStatus = () => {
 
     return (
         <>
-            <div className="flex flex-col sm:flex-row min-h-screen bg-gray-50">
-                <Sidebar />
-                <div className="flex-1 flex flex-col">
-                    <Navbar />
+            <PageWrapper>
+              <div className="flex flex-col sm:flex-row min-h-screen bg-gray-50 dark:bg-gray-900">
 
-                      {/* Scrollable content */}
-                    <div className="flex-1 overflow-y-auto p-3 sm:p-6">
-                        <h2 className="text-lg sm:text-xl font-semibold mb-4">
-                            User Control Panel
-                        </h2>
+                    <Sidebar />
+                    <div className="flex-1 flex flex-col">
+                        <Navbar />
 
-                        {/* Table Container */}
-                        <div className="overflow-x-auto bg-white border rounded-lg shadow-sm">
-                            <table className="min-w-[600px] w-full text-sm sm:text-base">
-                                <thead>
-                                    <tr className="bg-gray-100 text-gray-700 text-xs sm:text-sm">
-                                        <th className="p-3 text-left">#</th>
-                                        <th className="p-3 text-left">Name</th>
-                                        <th className="p-3 text-left">Email</th>
-                                        <th className="p-3 text-left">Role</th>
-                                        <th className="p-3 text-left">Status</th>
-                                        <th className="p-3 text-left">Action</th>
-                                    </tr>
-                                </thead>
+                        {/* Scrollable content */}
+                        <div className="flex-1 overflow-y-auto p-3 sm:p-6">
+                            <h2 className="text-lg sm:text-2xl font-semibold text-gray-800 dark:text-gray-100">
+                                User Control Panel
+                            </h2>
 
-                                <tbody>
-                                    {users.length > 0 ? (
-                                        users.map((user, index) => (
-                                            <tr
-                                                key={user._id}
-                                                className="border-b hover:bg-gray-50 text-xs sm:text-sm"
-                                            >
-                                                <td className="p-3 whitespace-nowrap">{index + 1}</td>
-                                                <td className="p-3 whitespace-nowrap">{user?.name}</td>
-                                                <td className="p-3 whitespace-nowrap text-gray-600">
-                                                    {user.email}
-                                                </td>
-                                                <td className="p-3 capitalize">{user.role}</td>
-                                                <td className="p-3">
-                                                    <select
-                                                        value={statusChange[user._id] || user.status}
-                                                        onChange={(e) =>
-                                                            handleSelectChange(user._id, e.target.value)
-                                                        }
-                                                        className="border border-gray-300 rounded-md px-2 py-1 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                                    >
-                                                        <option value="active">Active</option>
-                                                        <option value="deactivated">Deactivated</option>
-                                                    </select>
-                                                </td>
-                                                <td className="p-3">
-                                                    <div className="flex flex-col sm:flex-row gap-2">
-                                                        <button
-                                                            onClick={() => handleUpdateStatus(user._id)}
-                                                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs sm:text-sm transition"
+                            {/* Table Container */}
+                            <div className="overflow-x-auto bg-white dark:bg-gray-800 
+                            border dark:border-gray-700 
+                            rounded-lg shadow-sm mt-4">
+                                <table className="min-w-[600px] w-full text-sm sm:text-base">
+                                    <thead>
+                                        <tr className="bg-gray-100 dark:bg-gray-700 
+                                        text-gray-700 dark:text-gray-200 
+                                        text-xs sm:text-sm">
+                                            <th className="p-3 text-left">#</th>
+                                            <th className="p-3 text-left">Name</th>
+                                            <th className="p-3 text-left">Email</th>
+                                            <th className="p-3 text-left">Role</th>
+                                            <th className="p-3 text-left">Status</th>
+                                            <th className="p-3 text-left">Action</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {users.length > 0 ? (
+                                            users.map((user, index) => (
+                                                <tr
+                                                    key={user._id}
+                                                    className="border-b 
+                                        border-gray-200 dark:border-gray-700 
+                                        hover:bg-gray-50 dark:hover:bg-gray-700
+                                        text-xs sm:text-sm"
+                                                >
+                                                    <td className="p-3 whitespace-nowrap text-gray-800 dark:text-gray-100">{index + 1}</td>
+                                                    <td className="p-3 whitespace-nowrap text-gray-800 dark:text-gray-100">{user?.name}</td>
+                                                    <td className="p-3 whitespace-nowrap 
+                                                   text-gray-600 dark:text-gray-300">
+                                                        {user.email}
+                                                    </td>
+                                                    <td className="p-3 capitalize text-gray-800 dark:text-gray-100">{user.role}</td>
+                                                    <td className="p-3">
+                                                        <select
+                                                            value={statusChange[user._id] || user.status}
+                                                            onChange={(e) =>
+                                                                handleSelectChange(user._id, e.target.value)
+                                                            }
+                                                            className="border border-gray-300 dark:border-gray-600
+                                                       bg-white dark:bg-gray-700
+                                                       text-gray-800 dark:text-gray-100
+                                                       rounded-md px-2 py-1
+                                                       text-xs sm:text-sm
+                                                       focus:outline-none focus:ring-2
+                                                       focus:ring-blue-400 dark:focus:ring-blue-600"
                                                         >
-                                                            Update
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleDelete(user._id)}
-                                                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs sm:text-sm transition"
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    </div>
+                                                            <option value="active">Active</option>
+                                                            <option value="deactivated">Deactivated</option>
+                                                        </select>
+                                                    </td>
+                                                    <td className="p-3">
+                                                        <div className="flex flex-col sm:flex-row gap-2">
+                                                            <button
+                                                                onClick={() => handleUpdateStatus(user._id)}
+                                                                className="bg-blue-600 dark:bg-blue-700
+                                                           hover:bg-blue-700 dark:hover:bg-blue-800
+                                                           text-white px-3 py-1 rounded
+                                                           text-xs sm:text-sm transition"
+                                                            >
+                                                                Update
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDelete(user._id)}
+                                                                className="bg-red-600 dark:bg-red-700
+                                                           hover:bg-red-700 dark:hover:bg-red-800
+                                                           text-white px-3 py-1 rounded
+                                                           text-xs sm:text-sm transition"
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td
+                                                    colSpan="6"
+                                                    className="text-center py-4 
+                                               text-gray-500 dark:text-gray-400 
+                                               text-sm"
+                                                >
+                                                    No users found
                                                 </td>
                                             </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td
-                                                colSpan="6"
-                                                className="text-center py-4 text-gray-500 text-sm"
-                                            >
-                                                No users found
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+
+
+
                     </div>
-
-
-
                 </div>
-            </div>
+            </PageWrapper>
         </>
     )
 };

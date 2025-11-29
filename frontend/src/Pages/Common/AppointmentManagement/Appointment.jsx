@@ -6,6 +6,7 @@ import Sidebar from "../../../Components/Layouts/Sidebar";
 import Navbar from "../../../Components/Layouts/Navbar";
 import { NavLink } from "react-router-dom";
 import AppointTable from "../../../Components/AppointmentManagement/AppointTable";
+import PageWrapper from "../../../Components/pageWrappers";
 
 const AppointmentManagement = () => {
 
@@ -91,17 +92,18 @@ const AppointmentManagement = () => {
         }
     }, [filterStatus, appointment]);
     const stats = [
-        { label: "Total Appointments", value: totals.total, color: "text-gray-800" },
+        { label: "Total Appointments", value: totals.total, color: "text-black-600" },
         { label: "Today", value: totals.today, color: "text-emerald-300" },
         { label: "Scheduled", value: totals.scheduled, color: "text-sky-500" },
-        { label: "Completed", value: totals.completed, color: "text-green-600" },
+        { label: "Discharged", value: totals.completed, color: "text-green-600" },
         { label: "Confirmed", value: totals.confirmed, color: "text-indigo-600" },
         { label: "Cancelled", value: totals.cancelled, color: "text-rose-600" },
         { label: "Missed", value: totals.missed, color: "text-orange-500" },
     ]
     return (
         <>
-            <div className="flex flex-col sm:flex-row min-h-screen bg-gray-50">
+        <PageWrapper>
+            <div className="flex flex-col sm:flex-row min-h-screen ">
                 <Sidebar />
                 <div className="flex-1 flex flex-col">
                     <Navbar />
@@ -109,37 +111,47 @@ const AppointmentManagement = () => {
                     <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
                         {/* Header */}
                         <div>
-                            <h1 className="text-lg sm:text-2xl font-semibold text-gray-800">
+                            <h1 className="text-lg sm:text-2xl font-semibold text-gray-800 dark:text-gray-100">
                                 Appointment Management
                             </h1>
-                            <p className="text-gray-500 text-sm sm:text-base">
+                            <p className="text-gray-500 dark:text-gray-300 text-sm sm:text-base">
                                 Schedule and manage patient appointments
                             </p>
                         </div>
                         {/* to display totals */}
                         {userRole !== "patient" && (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-                                {
-                                    stats.map((item) => (
-                                        <div key={item.label} className="p-4 rounded-lg shadow bg-white">
-                                            <p className="font-semibold">{item.label}</p>
-                                            <p className={`text-2xl font-bold ${item.color}`}>{item.value}</p>
-                                        </div>
-                                    ))}
-                            </div>
+                            
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                        {stats.map((item) => (
+                            <div
+                                key={item.label}
+                                className="p-4 rounded-lg shadow 
+                                               bg-white dark:bg-gray-800 
+                                               text-gray-800 dark:text-gray-100"
+                            >
+                                <p className="text-sm font-medium text-gray-500">{item.label}</p>
+                                <p className={`mt-2 text-3xl font-bold ${item.color}`}>{item.value}</p>
+                                                   </div>
+                        ))}
+                    </div>
                         )}
                         {/* Filter Dropdown */}
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white p-3 sm:p-4 rounded-xl shadow-sm gap-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between 
+                                        bg-white dark:bg-gray-800 
+                                        p-3 sm:p-4 rounded-xl shadow-sm gap-3">
                             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
                                 <select
-                                    className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 text-sm"
+                                    className="border border-gray-300 dark:border-gray-600 
+                                               bg-white dark:bg-gray-700 
+                                               text-gray-800 dark:text-gray-100
+                                               rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 text-sm"
                                     value={filterStatus}
                                     onChange={(e) => setFilterStatus(e.target.value)}
                                 >
                                     <option>All Appointments</option>
                                     <option value="scheduled">Scheduled</option>
                                     <option value="confirmed">Confirmed</option>
-                                    <option value="completed">Completed</option>
+                                    <option value="completed">Discharged</option>
                                     <option value="cancelled">Cancelled</option>
                                     <option value="missed">Missed</option>
                                 </select>
@@ -157,7 +169,8 @@ const AppointmentManagement = () => {
 
 
                         {/* Table */}
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto bg-white dark:bg-gray-800 
+                                        rounded-lg shadow p-2">
                             <AppointTable
                                 appointment={filteredAppointment}
 
@@ -167,6 +180,7 @@ const AppointmentManagement = () => {
 
                 </div>
             </div>
+            </PageWrapper>
         </>
     )
 }
