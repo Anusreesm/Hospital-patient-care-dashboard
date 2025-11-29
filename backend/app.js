@@ -25,10 +25,12 @@ const app = express()
 app.use(
   cors({
     origin: [
-      "https://hospital-patient-care-dashboard.vercel.app" //  live frontend
+      "https://hospital-patient-care-dashboard.vercel.app"
+      
     ],
     methods: ["GET","POST","DELETE","PATCH","PUT"],
-    credentials: true
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"] 
   })
 );
 
