@@ -110,9 +110,9 @@ const Login = () => {
                     <div className="max-w-sm mx-auto bg-white rounded-lg shadow-md border border-gray-200 p-6 mt-8">
                         <h4 className="text-lg font-semibold text-gray-800 mb-4">Demo Credentials</h4>
                         <ul className="space-y-2">
-                            <li className="text-gray-700">
+                            {/* <li className="text-gray-700">
                                 <span className="font-medium">Admin:</span> admin@gmail.com / admin
-                            </li>
+                            </li> */}
                             <li className="text-gray-700">
                                 <span className="font-medium">Staff:</span> staff@gmail.com / demo123
                             </li>

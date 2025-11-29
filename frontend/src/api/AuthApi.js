@@ -8,15 +8,30 @@ export const LoginUser= async({email,password})=>{
  return result
 }
 
-export const ChangeStatus= async({id})=>{
-   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/status/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify({ status }),
-   })
-   const result = await res.json()
-   return result
-}
+export const ChangeStatus = async ({ id, status }) => {
+  try {
+    const token = localStorage.getItem("token"); //  JWT token
+
+    const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/status/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}` //token
+      },
+      body: JSON.stringify({ status })
+    });
+
+    const result = await res.json();
+    return result;
+  } catch (error) {
+    return {
+      success: false,
+      message: "Network error",
+      error: error.message
+    };
+  }
+};
+
 
 export const GetAllUsers= async()=>{
    const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/`, {
