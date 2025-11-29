@@ -1,7 +1,7 @@
 export const RegisterHospStaff = async ({ email, dept_id, name, phone, medical_license, exp_years, specialization_id }) => {
 
    try {
-      const res = await fetch('http://localhost:3000/api/hospStaff/register', {
+      const res = await fetch('https://hospital-patient-care-dashboard-backend.onrender.com/api/hospStaff/register', {
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify({ email, dept_id, name, phone, medical_license, exp_years, specialization_id })
@@ -19,7 +19,7 @@ export const RegisterHospStaff = async ({ email, dept_id, name, phone, medical_l
 }
 
 export const GetAllHospStaff = async () => {
-   const res = await fetch('http://localhost:3000/api/hospStaff/', {
+   const res = await fetch('https://hospital-patient-care-dashboard-backend.onrender.com/api/hospStaff/', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
       //  body:JSON.stringify()
@@ -29,7 +29,7 @@ export const GetAllHospStaff = async () => {
 }
 
 export const getHospStaffById = async (id) => {
-   const res = await fetch(`http://localhost:3000/api/hospStaff/${id}`, {
+   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/hospStaff/${id}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
       // body: JSON.stringify()
@@ -39,7 +39,7 @@ export const getHospStaffById = async (id) => {
 }
 
 export const deleteHospStaff = async (id) => {
-   const res = await fetch(`http://localhost:3000/api/hospStaff/delete/${id}`, {
+   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/hospStaff/delete/${id}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' }
 
@@ -50,7 +50,7 @@ export const deleteHospStaff = async (id) => {
 
 
 export const updateHospStaff = async (id, { dept_id, name, phone, medical_license, exp_years, specialization_id, email }) => {
-   const res = await fetch(`http://localhost:3000/api/hospStaff/update/${id}`, {
+   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/hospStaff/update/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ dept_id, name, phone, medical_license, exp_years, specialization_id, email })

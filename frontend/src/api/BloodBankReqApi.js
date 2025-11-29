@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api/bloodBankReq";
+const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/api/bloodBankReq";
 
 // get all confirmed appointments
 export const GetConfrimedAppointment=async () => {

@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:3000/api/appointment";
+// const API_URL = "http://localhost:3000/api/appointment";
+const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/api/appointment";
 
 export const BookAppointment = async (data) => {
     try {

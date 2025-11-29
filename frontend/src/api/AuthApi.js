@@ -1,5 +1,5 @@
 export const LoginUser= async({email,password})=>{
- const res=await fetch('http://localhost:3000/api/users/login',{
+ const res=await fetch('https://hospital-patient-care-dashboard-backend.onrender.com/api/users/login',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({email,password})
@@ -9,7 +9,7 @@ export const LoginUser= async({email,password})=>{
 }
 
 export const ChangeStatus= async({id})=>{
-   const res = await fetch(`http://localhost:3000/api/users/status/${id}`, {
+   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/status/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
        body: JSON.stringify({ status }),
@@ -19,7 +19,7 @@ export const ChangeStatus= async({id})=>{
 }
 
 export const GetAllUsers= async()=>{
-   const res = await fetch(`http://localhost:3000/api/users/`, {
+   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify()
@@ -29,7 +29,7 @@ export const GetAllUsers= async()=>{
 }
 
 export const deleteUser = async (id) => {
-   const res = await fetch(`http://localhost:3000/api/users/delete/${id}`, {
+   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/delete/${id}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify()
@@ -38,7 +38,7 @@ export const deleteUser = async (id) => {
    return result
 }
 export const EmailCheck = async (email) => {
-  const res = await fetch(`http://localhost:3000/api/users/check-email/${email}`, {
+  const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/check-email/${email}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });
@@ -48,7 +48,7 @@ export const EmailCheck = async (email) => {
 };
 
 export const getUserById = async (id) => {
-   const res = await fetch(`http://localhost:3000/api/users/${id}`, {
+   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/${id}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify()
@@ -60,7 +60,7 @@ export const getUserById = async (id) => {
 
 export const changeUserPw = async (id, data) => {
    try {
-      const res = await fetch(`http://localhost:3000/api/users/password/${id}`, {
+      const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/password/${id}`, {
          method: "PATCH",
          headers: {
             "Content-Type": "application/json",
@@ -82,7 +82,7 @@ export const changeUserPw = async (id, data) => {
 
 export const forgotPw = async (data) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/users/forgotPassword`, {
+    const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/forgotPassword`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -105,7 +105,7 @@ export const forgotPw = async (data) => {
 
 export const resetPw = async (token, data) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/users/resetPassword/${token}`, {
+    const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/resetPassword/${token}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

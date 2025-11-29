@@ -1,5 +1,5 @@
 export const GetAllPatients = async () => {
-   const res = await fetch('http://localhost:3000/api/patient/', {
+   const res = await fetch('https://hospital-patient-care-dashboard-backend.onrender.com/api/patient/', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
       //  body:JSON.stringify()
@@ -9,7 +9,7 @@ export const GetAllPatients = async () => {
 }
 
 export const registerPatient = async (payload) => {
-   const res = await fetch('http://localhost:3000/api/patient/register', {
+   const res = await fetch('https://hospital-patient-care-dashboard-backend.onrender.com/api/patient/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -20,7 +20,7 @@ export const registerPatient = async (payload) => {
 
 export const updatePatient = async (id, data) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/patient/update/${id}`, {
+    const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/patient/update/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -35,7 +35,7 @@ export const updatePatient = async (id, data) => {
 
 
 export const deletePatient = async (id) => {
-   const res = await fetch(`http://localhost:3000/api/patient/delete/${id}`, {
+   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/patient/delete/${id}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' }
 
@@ -45,7 +45,7 @@ export const deletePatient = async (id) => {
 }
 
 export const GetPatientsByPhoneNumber = async (phone) => {
-   const res = await fetch(`http://localhost:3000/api/patient/find-by-phone/${phone}`, {
+   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/patient/find-by-phone/${phone}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
       //  body:JSON.stringify()

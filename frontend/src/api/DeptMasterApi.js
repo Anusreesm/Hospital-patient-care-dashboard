@@ -1,5 +1,5 @@
 export const AddDepartments = async ({ dept_name }) => {
-   const res = await fetch('http://localhost:3000/api/deptMaster/create', {
+   const res = await fetch('https://hospital-patient-care-dashboard-backend.onrender.com/api/deptMaster/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ dept_name })
@@ -9,7 +9,7 @@ export const AddDepartments = async ({ dept_name }) => {
 }
 
 export const getAllDepartments = async () => {
-   const res = await fetch('http://localhost:3000/api/deptMaster/', {
+   const res = await fetch('https://hospital-patient-care-dashboard-backend.onrender.com/api/deptMaster/', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify()
@@ -20,7 +20,7 @@ export const getAllDepartments = async () => {
 
 
 export const deleteDepartment = async (id) => {
-   const res = await fetch(`http://localhost:3000/api/deptMaster/delete/${id}`, {
+   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/deptMaster/delete/${id}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify()
