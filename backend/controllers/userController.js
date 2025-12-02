@@ -381,6 +381,7 @@ export const forgotUserPassword = async (req, res) => {
 
     }
     catch (error) {
+        console.error("Failed to send email:", error);
         return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 }

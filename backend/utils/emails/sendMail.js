@@ -8,6 +8,10 @@ dotenv.config({ path: './.env' })
 
 const SendMail = async (toEmail, { subject, text, html }) => {
     try {
+        // Add this at the start of SendMail function
+console.log("USER_EMAIL:", process.env.USER_EMAIL);
+console.log("APP_PW exists:", !!process.env.APP_PW);
+console.log("APP_PW length:", process.env.APP_PW?.length); // Should be 16
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             // port: 587,
@@ -40,8 +44,11 @@ const SendMail = async (toEmail, { subject, text, html }) => {
                 }
             });
         });
+        console.log("Email sent successfully:", info.messageId);
+        return info; // Return success info
     } catch (error) {
         console.error(MESSAGES.COMMON.EMAIL_ERROR, error);
+         throw error;
     }
 };
 
