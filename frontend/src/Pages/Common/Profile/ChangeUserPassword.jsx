@@ -49,7 +49,7 @@ const ChangeUserPassword = () => {
 
         setTimeout(() => {
           LogoutHandler();
-          navigate("/login");
+          navigate("/");
         }, 1500);
       } else {
         toast.error(res.message || "Failed to update password");
