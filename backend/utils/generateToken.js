@@ -8,5 +8,5 @@ const generateToken = (id, role,name) => {
         { expiresIn: "1h" }
     );
 };
-console.log("secret_key:", process.env.SECRET_KEY)
+// console.log("secret_key:", process.env.SECRET_KEY)
 export default generateToken

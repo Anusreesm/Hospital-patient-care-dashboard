@@ -32,7 +32,7 @@ const SendMail = async (toEmail, { subject, text, html }) => {
 
         // Send mail and await response
         await new Promise((resolve, reject) => {
-            transporter.sendMail(mailData, (err, info) => {
+            transporter.sendMail(mailOptions, (err, info) => {
                 if (err) {
                     reject(err);
                 } else {
