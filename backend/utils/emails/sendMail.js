@@ -31,8 +31,8 @@ const SendMail = async (toEmail, { subject, text, html }) => {
         };
 
         // Send mail and await response
-        const info = await new Promise((resolve, reject) => {
-            transporter.sendMail(mailOptions, (err, info) => {
+        await new Promise((resolve, reject) => {
+            transporter.sendMail(mailData, (err, info) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -40,7 +40,6 @@ const SendMail = async (toEmail, { subject, text, html }) => {
                 }
             });
         });
-        console.log(MESSAGES.COMMON.EMAIL_SEND, info.messageId);
     } catch (error) {
         console.error(MESSAGES.COMMON.EMAIL_ERROR, error);
     }
