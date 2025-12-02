@@ -56,7 +56,7 @@ export const addAppointment = async (req, res) => {
             discharge_date: null,
             status: { $nin: ["deleted", "discharged"] }
         }).sort({ registration_date: -1 });
-       
+
         if (!registration) {
             return errorResponse(res, STATUS.BAD_REQUEST, "No active registration found for this patient");
         }
@@ -145,10 +145,32 @@ export const getAllAppointment = async (req, res) => {
         startOfToday.setHours(0, 0, 0, 0); // Midnight today
 
         // Auto-update: mark past 'scheduled' appointments as 'missed'
+        // await appointmentModel.updateMany(
+        //     { date: { $lt: startOfToday }, status: "scheduled" },
+        //     { $set: { status: "missed" } }
+        // );
+        const outdatedAppointments = await appointmentModel.find({
+            date: { $lt: startOfToday },
+            status: "scheduled",
+        });
+
+        // Update appointment status to missed
         await appointmentModel.updateMany(
             { date: { $lt: startOfToday }, status: "scheduled" },
             { $set: { status: "missed" } }
         );
+
+        // Update payment status to failed for each missed appointment
+        const missedAppointmentIds = outdatedAppointments.map(a => a._id);
+        console.log(missedAppointmentIds[0], "missed")
+
+        if (missedAppointmentIds.length > 0) {
+            await paymentModel.updateMany(
+                { appointment_id: { $in: missedAppointmentIds }, status: "pending" },
+                { $set: { status: "failed" } }
+            );
+        }
+
         const appointments = await getAppointmentsQuery()
         return successResponse(
             res,
