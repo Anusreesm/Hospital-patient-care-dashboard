@@ -1,5 +1,5 @@
 // src/Components/StaffManagement/UserRow.jsx
-import { verifyDelete } from "../../Utils/Alerts/ErrorAlert";
+import {  verifyDeleteWithUserWarning } from "../../Utils/Alerts/ErrorAlert";
 import { deleteHospStaff, GetAllHospStaff } from "../../api/HospStaff";
 import { DeleteItems } from "../../Utils/Alerts/SuccessAlert";
 import toast from "react-hot-toast";
@@ -45,7 +45,7 @@ const UserRow = ({
 
   const handleDelete = async (userId) => {
     console.log(userId)
-    const confirmed = await verifyDelete("user");
+    const confirmed = await verifyDeleteWithUserWarning("staff","User Account");
     if (!confirmed) return;
 
     try {

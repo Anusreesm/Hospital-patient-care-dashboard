@@ -4,7 +4,7 @@ import Input from "../../Components/Forms/Input"
 import { LoginUser } from "../../api/AuthApi"
 import { Link, NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../../Context/AuthContext"
-import { showInvalidCredentials } from "../../Utils/Alerts/ErrorAlert"
+import toast from "react-hot-toast"
 
 
 
@@ -23,11 +23,20 @@ const Login = () => {
 
         try {
             const result = await LoginUser({ email, password })
-            if (!result.success) {
-                showInvalidCredentials();
-                return;
-            }
+             if (!result.success) {
+            const msg = result?.message?.toLowerCase() || "";
 
+            if (msg.includes("inactive") || msg.includes("deactivated")) {
+                toast.error("Your account is deactivated. Contact admin.");
+            } 
+            else if (msg.includes("not found")) {
+                toast.error("User not found.");
+            }
+            else {
+                toast.error("Invalid credentials");
+            }
+return;
+        }
             if (result.success) {
                 // it is passed to AuthContext-passed as an object
                 LoginHandler(

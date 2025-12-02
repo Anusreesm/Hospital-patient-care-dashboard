@@ -36,3 +36,22 @@ export const verifyComplete = async (itemType = "item") => {
   // Return true if confirmed
   return result.isConfirmed;
 };
+
+
+export const verifyDeleteWithUserWarning = async (itemType,linkedType ) => {
+  const result = await Swal.fire({
+    title: `Are you sure you want to delete this ${itemType}?`,
+    html: `
+      <b>Warning:</b> Deleting this ${itemType} will also 
+      <span style="color:red; font-weight:bold;">delete the linked ${linkedType}</span>.
+    `,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete both!",
+    cancelButtonText: "Cancel",
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+  });
+
+  return result.isConfirmed;
+};

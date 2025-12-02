@@ -265,8 +265,8 @@ const HospStaffReg = ({ mode = "create", existingStaff = null, onClose }) => {
                     {/* <div className={`bg-white ${theme === "dark" ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800"} rounded-2xl shadow-lg p-8 w-full max-w-3xl relative`}> */}
                     <div
                         className={`${theme === "dark"
-                                ? "bg-gray-800 text-gray-100"
-                                : "bg-white text-gray-800"
+                            ? "bg-gray-800 text-gray-100"
+                            : "bg-white text-gray-800"
                             } rounded-2xl shadow-lg p-6 w-full max-w-3xl relative 
      max-h-[90vh] overflow-y-auto`}
                     >

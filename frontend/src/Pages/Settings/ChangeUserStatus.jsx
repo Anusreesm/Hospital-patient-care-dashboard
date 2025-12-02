@@ -3,7 +3,7 @@ import toast from "react-hot-toast"
 import { ChangeStatus, deleteUser, GetAllUsers } from "../../api/AuthApi";
 import Sidebar from "../../Components/Layouts/Sidebar";
 import Navbar from "../../Components/Layouts/Navbar";
-import { verifyDelete } from "../../Utils/Alerts/ErrorAlert";
+import {  verifyDeleteWithUserWarning } from "../../Utils/Alerts/ErrorAlert";
 import { DeleteItems } from "../../Utils/Alerts/SuccessAlert";
 import PageWrapper from "../../Components/pageWrappers";
 const ChangeUserStatus = () => {
@@ -69,7 +69,7 @@ const ChangeUserStatus = () => {
         }
     };
     const handleDelete = async (id) => {
-        const confirmed = await verifyDelete("user");
+        const confirmed = await verifyDeleteWithUserWarning("User Account","staff details");
         if (!confirmed) return;
         try {
             const res = await deleteUser(id);

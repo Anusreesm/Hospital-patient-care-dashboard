@@ -46,6 +46,11 @@ const AppointmentCreate = ({ mode = "create", existingAppointment = null, onClos
             return;
         }
 
+        let normalizedDate = "";
+        if (formData.date) {
+            const d = new Date(formData.date);
+            normalizedDate = d.toISOString().split("T")[0];  // YYYY-MM-DD
+        }
 
         try {
             if (mode === "create") {
@@ -53,7 +58,7 @@ const AppointmentCreate = ({ mode = "create", existingAppointment = null, onClos
                     patient_id: patientId,
                     hosp_staff_id: hospitalStaffId,
                     specialization_id: specId,
-                    date,
+                    date: normalizedDate,
                     time,
                     amount,
                 };
@@ -249,8 +254,8 @@ const AppointmentCreate = ({ mode = "create", existingAppointment = null, onClos
                     {/* <div className={`bg-white ${theme === "dark" ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800"} rounded-2xl shadow-lg p-8 w-full max-w-3xl relative`}> */}
                     <div
                         className={`${theme === "dark"
-                                ? "bg-gray-800 text-gray-100"
-                                : "bg-white text-gray-800"
+                            ? "bg-gray-800 text-gray-100"
+                            : "bg-white text-gray-800"
                             } rounded-2xl shadow-lg p-6 w-full max-w-3xl relative 
      max-h-[90vh] overflow-y-auto`}
                     >

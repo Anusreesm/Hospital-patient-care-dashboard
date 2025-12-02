@@ -7,6 +7,7 @@ import { GetAllAppointment } from "../../api/AppointmentApi";
 import { GetAllReg } from "../../api/RegApi";
 import { GetAllPatients } from "../../api/PatientApi";
 import ProfileForm from "../Common/Profile/ProfileForm";
+import { formatToDDMMYYYY } from "../../Utils/dataFormatter";
 
 const DoctorDashboard = () => {
     const { userName, user } = useAuth();
@@ -108,16 +109,21 @@ const DoctorDashboard = () => {
                     .sort((a, b) => parseAppointmentDateTimeLatest(a) - parseAppointmentDateTimeLatest(b));
 
                 const nextApp = upcomingAppointments.length > 0 ? upcomingAppointments[0] : null;
-                const formatDate = (dateStr) => {
-                    // remove the "T00:00:00.000Z" part
-                    return dateStr.split('T')[0];
+                // const formatDate = (dateStr) => {
+                //     // remove the "T00:00:00.000Z" part
+                //     return dateStr.split('T')[0];
+                // };
+                const formatDateTime = (date, time) => {
+                    if (!date) return "—";
+                    const formattedDate = formatToDDMMYYYY(date);
+                    return `${formattedDate}${time ? `, ${time}` : ""}`;
                 };
                 setTotals({
                     todaysAppointment: todaysAppointments.length,
                     totalPatients: totalPatientsUnderDoctor,
                     weeklyAppointment: weeklyAppointments.length,
                     nextAppointment: nextApp
-                        ? `${formatDate(nextApp.date)} at ${nextApp.time}`
+                          ? `${formatDateTime(nextApp.date)} at ${nextApp.time}`
                         : "No upcoming"
                 });
 

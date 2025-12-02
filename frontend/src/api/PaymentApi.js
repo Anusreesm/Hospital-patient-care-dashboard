@@ -2,9 +2,12 @@ const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/ap
 
 export const createPayment = async (data) => {
   try {
+    const token = localStorage.getItem("token"); //  JWT token
+    if (!token) return { success: false, message: "User not logged in" };
     const res = await fetch(`${API_URL}/create`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}` },
       body: JSON.stringify(data),
     });
 
@@ -22,46 +25,55 @@ export const createPayment = async (data) => {
   }
 };
 
-export const successPayment=async(session_id)=>{
+export const successPayment = async (session_id) => {
   try {
-        const res = await fetch(`${API_URL}/success?session_id=${session_id}`, {
+    const token = localStorage.getItem("token"); //  JWT token
+    if (!token) return { success: false, message: "User not logged in" };
+    const res = await fetch(`${API_URL}/success?session_id=${session_id}`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-     
-   })
-     return await res.json();
-    } catch (err) {
-        console.error("success payment error:", err);
-        return { success: false, message: "Network error" };
-    }
+      headers: { 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` },
+
+    })
+    return await res.json();
+  } catch (err) {
+    console.error("success payment error:", err);
+    return { success: false, message: "Network error" };
+  }
 }
 
-export const cancelPayment=async(payment_id)=>{
-  try{
- const res = await fetch(`${API_URL}/cancel?payment_id=${payment_id}`, {
+export const cancelPayment = async (payment_id) => {
+  try {
+    const token = localStorage.getItem("token"); //  JWT token
+    if (!token) return { success: false, message: "User not logged in" };
+    const res = await fetch(`${API_URL}/cancel?payment_id=${payment_id}`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      
-   })
-     return await res.json();
+      headers: { 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` },
+
+    })
+    return await res.json();
   }
-  catch(err){
-     console.error("canceled payment error:", err);
-        return { success: false, message: "Network error" };
+  catch (err) {
+    console.error("canceled payment error:", err);
+    return { success: false, message: "Network error" };
   }
 }
 
 
 export const GetAllPayments = async () => {
-    try {
-        const res = await fetch(`${API_URL}/`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-           
-        });
-        return await res.json();
-    } catch (err) {
-        console.error("Payment error:", err);
-        return { success: false, message: "Network error" };
-    }
+  try {
+    const token = localStorage.getItem("token"); //  JWT token
+    if (!token) return { success: false, message: "User not logged in" };
+    const res = await fetch(`${API_URL}/`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}` },
+
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("Payment error:", err);
+    return { success: false, message: "Network error" };
+  }
 };

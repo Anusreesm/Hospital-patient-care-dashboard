@@ -1,7 +1,12 @@
+const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/api/deptMaster";
+
 export const AddDepartments = async ({ dept_name }) => {
-   const res = await fetch('https://hospital-patient-care-dashboard-backend.onrender.com/api/deptMaster/create', {
+   const token = localStorage.getItem("token"); //  JWT token
+   if (!token) return { success: false, message: "User not logged in" };
+   const res = await fetch(`${API_URL}/create`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` },
       body: JSON.stringify({ dept_name })
    })
    const result = await res.json()
@@ -9,10 +14,13 @@ export const AddDepartments = async ({ dept_name }) => {
 }
 
 export const getAllDepartments = async () => {
-   const res = await fetch('https://hospital-patient-care-dashboard-backend.onrender.com/api/deptMaster/', {
+   const token = localStorage.getItem("token"); //  JWT token
+   if (!token) return { success: false, message: "User not logged in" };
+   const res = await fetch(`${API_URL}/`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify()
+      headers: { 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` },
+
    })
    const result = await res.json()
    return result
@@ -20,10 +28,13 @@ export const getAllDepartments = async () => {
 
 
 export const deleteDepartment = async (id) => {
-   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/deptMaster/delete/${id}`, {
+   const token = localStorage.getItem("token"); //  JWT token
+   if (!token) return { success: false, message: "User not logged in" };
+   const res = await fetch(`${API_URL}/delete/${id}`, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify()
+      headers: { 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` },
+
    })
    const result = await res.json()
    return result

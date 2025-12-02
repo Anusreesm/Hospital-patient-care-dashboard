@@ -1,7 +1,12 @@
+const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/api/users";
+
 export const LoginUser= async({email,password})=>{
- const res=await fetch('https://hospital-patient-care-dashboard-backend.onrender.com/api/users/login',{
+ 
+ const res=await fetch(`${API_URL}/login`,{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type':'application/json',
+        
+    },
     body:JSON.stringify({email,password})
  })
  const result= await res.json()
@@ -11,12 +16,12 @@ export const LoginUser= async({email,password})=>{
 export const ChangeStatus = async ({ id, status }) => {
   try {
     const token = localStorage.getItem("token"); //  JWT token
-
-    const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/status/${id}`, {
+ if (!token) return { success: false, message: "User not logged in" };
+    const res = await fetch(`${API_URL}/status/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}` //token
+        'Authorization': `Bearer ${token}` //token
       },
       body: JSON.stringify({ status })
     });
@@ -34,26 +39,34 @@ export const ChangeStatus = async ({ id, status }) => {
 
 
 export const GetAllUsers= async()=>{
-   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/`, {
+   const token = localStorage.getItem("token"); //  JWT token
+ if (!token) return { success: false, message: "User not logged in" };
+   const res = await fetch(`${API_URL}/`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify()
+      headers: { 'Content-Type': 'application/json',
+         'Authorization': `Bearer ${token}`
+       },
+     
    })
    const result = await res.json()
    return result
 }
 
 export const deleteUser = async (id) => {
-   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/delete/${id}`, {
+   const token = localStorage.getItem("token"); //  JWT token
+ if (!token) return { success: false, message: "User not logged in" };
+   const res = await fetch(`${API_URL}/delete/${id}`, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify()
+      headers: { 'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+       },
+     
    })
    const result = await res.json()
    return result
 }
 export const EmailCheck = async (email) => {
-  const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/check-email/${email}`, {
+  const res = await fetch(`${API_URL}/check-email/${email}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });
@@ -63,10 +76,12 @@ export const EmailCheck = async (email) => {
 };
 
 export const getUserById = async (id) => {
-   const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/${id}`, {
+     const token = localStorage.getItem("token"); //  JWT token
+ if (!token) return { success: false, message: "User not logged in" };
+   const res = await fetch(`${API_URL}/${id}`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify()
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      
    })
    const result = await res.json()
    return result
@@ -75,10 +90,13 @@ export const getUserById = async (id) => {
 
 export const changeUserPw = async (id, data) => {
    try {
-      const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/password/${id}`, {
+    const token = localStorage.getItem("token"); //  JWT token
+ if (!token) return { success: false, message: "User not logged in" };
+      const res = await fetch(`${API_URL}/password/${id}`, {
          method: "PATCH",
          headers: {
             "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
          },
          body: JSON.stringify(data),
       });
@@ -97,7 +115,7 @@ export const changeUserPw = async (id, data) => {
 
 export const forgotPw = async (data) => {
   try {
-    const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/forgotPassword`, {
+    const res = await fetch(`${API_URL}/forgotPassword`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -120,7 +138,7 @@ export const forgotPw = async (data) => {
 
 export const resetPw = async (token, data) => {
   try {
-    const res = await fetch(`https://hospital-patient-care-dashboard-backend.onrender.com/api/users/resetPassword/${token}`, {
+    const res = await fetch(`${API_URL}/resetPassword/${token}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

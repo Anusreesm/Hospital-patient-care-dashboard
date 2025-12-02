@@ -2,10 +2,15 @@ const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/ap
 
 export const GetAllReg = async () => {
     try {
+        const token = localStorage.getItem("token"); //  JWT token
+        if (!token) return { success: false, message: "User not logged in" };
         const res = await fetch(`${API_URL}/`, {
             method: "GET",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(),
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
+            }
+
         });
         return await res.json();
     } catch (err) {

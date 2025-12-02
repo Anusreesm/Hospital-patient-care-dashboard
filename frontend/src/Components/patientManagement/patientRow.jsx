@@ -1,6 +1,7 @@
 import toast from "react-hot-toast";
 import { verifyDelete } from "../../Utils/Alerts/ErrorAlert";
 import { deletePatient, GetAllPatients } from "../../api/PatientApi";
+import { formatToDDMMYYYY } from "../../Utils/dataFormatter";
 const STATUS_COLORS = {
     active: "bg-green-400 text-white dark:bg-green-400 dark:text-black",
     discharged: "bg-orange-400 text-white dark:bg-orange-400 dark:text-black",
@@ -11,18 +12,24 @@ const PatientRow = ({ patient, nextAppointment, onEdit, onDelete }) => {
     console.log(patient?.patient_id)
 
 
-    const formatDate = (date) => {
-        if (!date) return "-";
-        const d = new Date(date)
-        if (isNaN(d)) return "-";
-        const formattedDate = d.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            timeZone: "Asia/Kolkata"
-        })
-        return `${formattedDate}`
-    }
+   // const formatDate = (date) => {
+    //     if (!date) return "-";
+    //     const d = new Date(date)
+    //     if (isNaN(d)) return "-";
+    //     const formattedDate = d.toLocaleDateString("en-GB", {
+    //         day: "2-digit",
+    //         month: "short",
+    //         year: "numeric",
+    //         timeZone: "Asia/Kolkata"
+    //     })
+    //     return `${formattedDate}`
+    // }
+
+    const formatDateTime = (date, time) => {
+        if (!date) return "—";
+        const formattedDate = formatToDDMMYYYY(date);
+        return `${formattedDate}${time ? `, ${time}` : ""}`;
+    };
     const nextDate = nextAppointment(patient._id);
 
     //     const handleDelete = async (patientId) => {
@@ -73,7 +80,7 @@ const PatientRow = ({ patient, nextAppointment, onEdit, onDelete }) => {
         toast.success("Patient deleted!");
         onDelete?.(patientId);
     } else {
-        toast.error("Unable to delete patient.");
+       toast.error(res.message || "Unable to delete patient.");
     }
 };
 
@@ -129,11 +136,12 @@ const PatientRow = ({ patient, nextAppointment, onEdit, onDelete }) => {
                 </td>
                 {/* reg date */}
                 <td className="py-3 align-middle text-gray-800 dark:text-gray-400 font-medium text-center sm:text-left">
-                    {formatDate(patient?.registration_date) || "-"}
+                     {formatDateTime(patient?.registration_date)|| "-"}
+                    {/* {formatDate(patient?.registration_date) || "-"} */}
                 </td>
                 {/* discharge date */}
                 <td className="py-3 align-middle text-gray-800 dark:text-gray-400 font-medium text-center sm:text-left">
-                    {patient?.discharge_date ? formatDate(patient.discharge_date) : (
+                    {patient?.discharge_date ? formatDateTime(patient.discharge_date) : (
                         <span className="text-gray-500 font-medium">
                             N/A
                         </span>
@@ -142,7 +150,7 @@ const PatientRow = ({ patient, nextAppointment, onEdit, onDelete }) => {
                 {/* next appointment */}
                 <td className="py-3 align-middle text-gray-800 dark:text-gray-400 font-medium text-center sm:text-left">
                     {nextDate ? (
-                        formatDate(nextDate)
+                         formatDateTime(nextDate)
                     ) : (
                         <span className="text-gray-400">N/A</span>
                     )}

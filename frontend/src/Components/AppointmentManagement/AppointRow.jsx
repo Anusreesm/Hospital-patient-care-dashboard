@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import { CompleteAppointment, DeleteAppointment } from "../../api/AppointmentApi";
 import { verifyComplete, verifyDelete } from "../../Utils/Alerts/ErrorAlert";
 import { useAuth } from "../../Context/AuthContext";
+import { formatToDDMMYYYY } from "../../Utils/dataFormatter";
 const STATUS_COLORS = {
     scheduled: "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100",
     confirmed: "bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-100",
@@ -15,15 +16,9 @@ const AppointRow = ({ appointment, onUpdate, onEdit, onDelete }) => {
     const { userRole } = useAuth()
     const formatDateTime = (date, time) => {
         if (!date) return "—";
-        const d = new Date(date);
-        const formattedDate = d.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            timeZone: "Asia/Kolkata"
-        });
-        return `${formattedDate}${time ? `, ${time}` : ""}`;
-    };
+    const formattedDate = formatToDDMMYYYY(date);
+    return `${formattedDate}${time ? `, ${time}` : ""}`;
+};
 
     const mergeDateAndTime = (isoDate, time) => {
         if (!isoDate || !time) return null;

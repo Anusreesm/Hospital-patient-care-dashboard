@@ -2,9 +2,15 @@ import { useState } from "react";
 import { verifyDelete } from "../../../Utils/Alerts/ErrorAlert";
 import { DeleteBloodReq } from "../../../api/BloodBankReqApi";
 import toast from "react-hot-toast";
+import { formatToDDMMYYYY } from "../../../Utils/dataFormatter";
 
 const RequestRow = ({ request, onEdit, onDelete, onStatusUpdate }) => {
     console.log(request)
+const formatDateTime = (date, time) => {
+        if (!date) return "—";
+        const formattedDate = formatToDDMMYYYY(date);
+        return `${formattedDate}${time ? `, ${time}` : ""}`;
+    };
 
     const PRIORITY_COLORS = {
         low: "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-100",
@@ -92,8 +98,9 @@ const RequestRow = ({ request, onEdit, onDelete, onStatusUpdate }) => {
                 {/* date */}
                 <td className="p-3">
                     <span className="text-gray-800 dark:text-gray-200 font-medium text-center sm:text-left">
-                        {new Date(request?.request_date).toLocaleDateString()}
-                    </span>
+                        {/* {new Date(request?.request_date).toLocaleDateString()} */}
+                         {formatDateTime(request?.request_date)}                   
+                          </span>
                 </td>
 
                 {/* status */}

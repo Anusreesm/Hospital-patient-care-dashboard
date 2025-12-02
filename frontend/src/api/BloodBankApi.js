@@ -4,10 +4,15 @@ const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/ap
 
 export const GetAllBloodType = async () => {
     try {
+        const token = localStorage.getItem("token"); //  JWT token
+        if (!token) return { success: false, message: "User not logged in" };
         const res = await fetch(`${API_URL}/`, {
             method: "GET",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(),
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
+            },
+
         });
         return await res.json();
     } catch (err) {
@@ -18,11 +23,16 @@ export const GetAllBloodType = async () => {
 
 
 // updateBloodBank
-export const UpdateBloodBank= async(id,data)=>{
-     try {
+export const UpdateBloodBank = async (id, data) => {
+    try {
+        const token = localStorage.getItem("token"); //  JWT token
+        if (!token) return { success: false, message: "User not logged in" };
         const res = await fetch(`${API_URL}/update/${id}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(data),
         });
         return await res.json();
@@ -33,12 +43,17 @@ export const UpdateBloodBank= async(id,data)=>{
 }
 
 // Delete bloodbank
-export const DeleteBloodBank=async(id)=>{
-     try {
+export const DeleteBloodBank = async (id) => {
+    try {
+        const token = localStorage.getItem("token"); //  JWT token
+        if (!token) return { success: false, message: "User not logged in" };
         const res = await fetch(`${API_URL}/delete/${id}`, {
             method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(),
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
+            },
+
         });
         return await res.json();
     } catch (err) {

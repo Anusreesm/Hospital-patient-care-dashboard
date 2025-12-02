@@ -1,19 +1,23 @@
 const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/api/bloodBankDonor";
 
 //create donor
-export const CreateDonor = async (data) =>{
-    try{
- const res = await fetch(`${API_URL}/create`, {
+export const CreateDonor = async (data) => {
+    try {
+        const token = localStorage.getItem("token"); //  JWT token
+        if (!token) return { success: false, message: "User not logged in" };
+        const res = await fetch(`${API_URL}/create`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data),
         });
-      const result = await res.json(); 
-    return result;
+        const result = await res.json();
+        return result;
     }
-    catch(err)
-    {
-         console.error("donor  error:", err);
+    catch (err) {
+        console.error("donor  error:", err);
         return { success: false, message: "Network error" };
     }
 }
@@ -21,10 +25,15 @@ export const CreateDonor = async (data) =>{
 // get all donors
 export const GetAllDonors = async () => {
     try {
+        const token = localStorage.getItem("token"); //  JWT token
+        if (!token) return { success: false, message: "User not logged in" };
         const res = await fetch(`${API_URL}/`, {
             method: "GET",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(),
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
+            },
+
         });
         return await res.json();
     } catch (err) {
@@ -34,11 +43,16 @@ export const GetAllDonors = async () => {
 };
 
 // updateDonor
-export const UpdateDonor= async(id,data)=>{
-     try {
+export const UpdateDonor = async (id, data) => {
+    try {
+        const token = localStorage.getItem("token"); //  JWT token
+        if (!token) return { success: false, message: "User not logged in" };
         const res = await fetch(`${API_URL}/update/${id}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(data),
         });
         return await res.json();
@@ -49,12 +63,17 @@ export const UpdateDonor= async(id,data)=>{
 }
 
 // Delete donor
-export const DeleteDonor=async(id)=>{
-     try {
+export const DeleteDonor = async (id) => {
+    try {
+        const token = localStorage.getItem("token"); //  JWT token
+        if (!token) return { success: false, message: "User not logged in" };
         const res = await fetch(`${API_URL}/delete/${id}`, {
             method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(),
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
+            },
+
         });
         return await res.json();
     } catch (err) {

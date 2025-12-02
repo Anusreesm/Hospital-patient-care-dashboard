@@ -29,18 +29,24 @@ const CancelPage = () => {
         else navigate("/patient/dashboard"); // default for patient
     };
     return (
-        <div className="flex flex-col justify-center items-center h-screen space-y-6">
-            <h1 className="text-2xl font-semibold text-red-600">
-                Payment cancelled sorry
-
-            </h1>
-
-            <button
-                onClick={handleBack}
-                className="px-5 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-200"
-            >
-                Back to Dashboard
-            </button>
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 dark:bg-gray-900">
+            <div className="bg-gray-800 dark:bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col items-center space-y-4 max-w-sm w-full mx-4">
+                <div className="w-20 h-20 flex items-center justify-center bg-red-600 rounded-full">
+                    <i className="fa-solid fa-xmark text-white text-4xl"></i>
+                </div>
+                <h1 className="text-2xl font-bold text-red-400 text-center">
+                    Payment Cancelled
+                </h1>
+                <p className="text-gray-300 text-center">
+                    Sorry, your payment was not completed.
+                </p>
+                <button
+                    onClick={handleBack}
+                    className="mt-4 w-full px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-200 font-medium"
+                >
+                    Back to Dashboard
+                </button>
+            </div>
         </div>
     );
 };

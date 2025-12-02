@@ -31,7 +31,7 @@ const ProfileForm = () => {
                 const patients = patientRes?.data?.patient || [];
 
                 const currentUser = users.find(u => u._id === user.id);
-                if (userRole === "staff") {
+                if (userRole === "staff" || userRole ==="doctor") {
                     const currentStaff = staff.find(s => s.user_id._id === user.id);
                     setFormData({
                         name: currentUser?.name || "",

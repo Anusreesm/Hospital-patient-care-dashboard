@@ -1,9 +1,15 @@
 import toast from "react-hot-toast";
 import { DeleteDonor, UpdateDonor } from "../../../api/BloodBankDonorApi";
 import { verifyComplete, verifyDelete } from "../../../Utils/Alerts/ErrorAlert";
+import { formatToDDMMYYYY } from "../../../Utils/dataFormatter";
 
 const DonorRow = ({ donor, onUpdate, onEdit, onDelete }) => {
     console.log(donor)
+ const formatDateTime = (date, time) => {
+        if (!date) return "—";
+        const formattedDate = formatToDDMMYYYY(date);
+        return `${formattedDate}${time ? `, ${time}` : ""}`;
+    };
 
     const handleComplete = async (id) => {
         try {
@@ -81,8 +87,8 @@ const DonorRow = ({ donor, onUpdate, onEdit, onDelete }) => {
                 {/* date */}
                 <td className="p-3">
                     <span className="text-gray-800 dark:text-gray-200 font-medium text-center sm:text-left">
-                        {new Date(donor?.date).toLocaleDateString()}
-                    </span>
+                         {formatDateTime(donor?.date)}
+                        {/* {new Date(donor?.date).toLocaleDateString()} */}                    </span>
                 </td>
                 {/* status */}
                 <td className="p-3">
