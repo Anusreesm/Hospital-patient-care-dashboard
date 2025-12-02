@@ -37,11 +37,11 @@ UserRouter.get('/check-email/:email', checkEmail)
 
 // @route   GET/api/users/
 // @desc   GET all users
-UserRouter.get("/", getUsers)
+UserRouter.get("/",authMiddleware, getUsers)
 
 // @route   GET/api/users/:id
 // @desc   GET single users
-UserRouter.get("/:id", getUserById)
+UserRouter.get("/:id",authMiddleware, getUserById)
 
 // @route   PUT/api/users/update/:id
 // @desc   update user

@@ -5,6 +5,7 @@ import { errorResponse, successResponse } from "../constants/response.js"
 import addressModel from "../models/Addresses.js"
 import appointmentModel from "../models/Appointment.js"
 import patientModel from "../models/Patient.js"
+import paymentModel from "../models/Payment.js"
 import regModel from "../models/Registration.js"
 import userModel from "../models/User.js"
 import { getPatientsByIdQuery, getPatientsQuery } from "../services/patientService.js"
@@ -482,31 +483,100 @@ export const updatePatient = async (req, res) => {
 export const deletePatient = async (req, res) => {
     try {
         const { id } = req.params
-        console.log("Deleting patient ID:", req.params.id);
-        // to delete from patientDetails
+
+        // to delete 
         // Find patient
         const patient = await patientModel.findById(id);
         if (!patient || !patient.isActive) {
             return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.PATIENT.PATIENT_NOT_FOUND);
         }
 
-        // Soft delete
+       
+
+        // ---------------------------------------------
+        // STEP 1 — Check ALL upcoming appointments (DATE + TIME)
+        // ---------------------------------------------
+      
+ const todayStart = new Date();
+        console.log(todayStart)
+        todayStart.setHours(0, 0, 0, 0); // today's midnight
+
+        const futureAppointment = await appointmentModel.findOne({
+            patient_id: id,
+            date: { $gte: todayStart },  // Only today + future dates
+            status: { $in: ["scheduled", "confirmed"] },
+        });
+        console.log(futureAppointment)
+        if (futureAppointment) {
+            return errorResponse(
+                res,
+                STATUS.BAD_REQUEST,
+                MESSAGES.PATIENT.CANNOT_DELETE_PATIENT
+            );
+        }
+        // ---------------------------------------------
+        // STEP 2 — Soft delete patient
+        // ---------------------------------------------
         patient.isActive = false;
         patient.deletedAt = new Date();
         await patient.save();
-        //Update active registrations' status to "deleted"
+
+
+        // ---------------------------------------------
+        // STEP 3 — Soft delete user account
+        // ---------------------------------------------
+        if (patient.user_id) {
+            await userModel.findByIdAndUpdate(
+                patient.user_id,
+                {
+                    $set: {
+                        isActive: false,
+                        status: "deactivated",
+                        deletedAt: new Date()
+                    }
+                }
+            );
+        }
+
+
+        // ---------------------------------------------
+        // STEP 4 — Soft delete active registrations
+        // ---------------------------------------------
         await regModel.updateMany(
             { patient_id: id, status: "active" },
             { $set: { status: "deleted" } }
         );
+        // ---------------------------------------------
+        // STEP 5 — Cancel scheduled appointments
+        // ---------------------------------------------
+        const cancelledAppointments = await appointmentModel.find({
+            patient_id: id,
+            status: "scheduled"
+        });
+
         await appointmentModel.updateMany(
             { patient_id: id, status: "scheduled" },
             { $set: { status: "cancelled" } }
-        )
+        );
+        // ---------------------------------------------
+        // STEP 6 — Mark payments as deleted
+        // ---------------------------------------------
+
+        for (const appt of cancelledAppointments) {
+            if (appt.payment_id) {
+                await paymentModel.findByIdAndUpdate(appt.payment_id, {
+                    $set: { status: "deleted" }
+                });
+            }
+        }
+        // ---------------------------------------------
+        // SUCCESS
+        // ---------------------------------------------
+
         return successResponse(
             res,
             STATUS.OK,
-            { patient },
+            { patient, upcomingAppointments },
             MESSAGES.PATIENT.PATIENT_DELETED
         )
     }
@@ -515,4 +585,3 @@ export const deletePatient = async (req, res) => {
         return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 }
-

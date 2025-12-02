@@ -63,7 +63,11 @@ export const loginUser = async (req, res) => {
         // To find User
         const user = await userModel.findOne({ email })
         if (!user) {
-            return errorResponse(res, STATUS.UNAUTHORIZED, MESSAGES.INVALID_CREDENTIALS)
+            return errorResponse(res, STATUS.UNAUTHORIZED, MESSAGES.USER.USER_NOT_FOUND)
+        }
+        // Check if user is active 
+        if (user.status !== "active" || user.isActive === false) {
+            return errorResponse(res, STATUS.FORBIDDEN, MESSAGES.ACCOUNT_INACTIVE);
         }
         // to check password
         const isVerify = await bcrypt.compare(password, user.password);
@@ -71,10 +75,10 @@ export const loginUser = async (req, res) => {
             return errorResponse(res, STATUS.UNAUTHORIZED, MESSAGES.INVALID_CREDENTIALS)
         }
 
-        if (user.status !== "active") {
-            return errorResponse(res, STATUS.FORBIDDEN, MESSAGES.ACCOUNT_INACTIVE);
-        }
-        // 4️⃣ Update last login timestamp (non-blocking)
+        // if (user.status !== "active") {
+        //     return errorResponse(res, STATUS.FORBIDDEN, MESSAGES.ACCOUNT_INACTIVE);
+        // }
+        //  Update last login timestamp (non-blocking)
         user.lastLoginAt = new Date();
         await user.save();
 
@@ -237,8 +241,13 @@ export const deleteUser = async (req, res) => {
         }
         user.isActive = false;
         user.deletedAt = new Date();
+        user.status = "deactivated"
         await user.save();
-
+        // Soft delete from hospitalStaff 
+        await hospitalStaffModel.findOneAndUpdate(
+            { user_id: user._id },
+            { isActive: false, deletedAt: new Date() }
+        );
         return successResponse(
             res,
             STATUS.OK,
@@ -247,6 +256,7 @@ export const deleteUser = async (req, res) => {
         )
     }
     catch (error) {
+        console.log(error)
         return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 }
@@ -378,26 +388,25 @@ export const forgotUserPassword = async (req, res) => {
 // @desc     reset-password 
 // @route   POST /api/users/resetPassword/:token
 // @access  Public
-export const resetPassword=async(req,res)=>{
-    try{
-        const {token}=req.params
-        const {password}=req.body
-        const user=await userModel.findOne({
-            resetPasswordToken:token,
-            resetPasswordExpires:{$gt:Date.now()}
+export const resetPassword = async (req, res) => {
+    try {
+        const { token } = req.params
+        const { password } = req.body
+        const user = await userModel.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() }
         })
-        if(!user){
-            return errorResponse(res,STATUS.BAD_REQUEST,MESSAGES.USER.INVALID_EXPIRED)
+        if (!user) {
+            return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.USER.INVALID_EXPIRED)
         }
-        const salt=await bcrypt.genSalt(10)
-        user.password=await bcrypt.hash(password,salt)
-        user.resetPasswordToken=null
-        user.resetPasswordExpires=null
+        const salt = await bcrypt.genSalt(10)
+        user.password = await bcrypt.hash(password, salt)
+        user.resetPasswordToken = null
+        user.resetPasswordExpires = null
         await user.save()
-        return successResponse(res,STATUS.OK,MESSAGES.USER.PASSWORD_RESET)
+        return successResponse(res, STATUS.OK, MESSAGES.USER.PASSWORD_RESET)
     }
-    catch(error)
-    {
+    catch (error) {
         return errorResponse(res, STATUS.INTERNAL_SERVER_ERROR, MESSAGES.SERVICE_ERROR)
     }
 }

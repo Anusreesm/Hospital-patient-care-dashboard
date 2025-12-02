@@ -148,6 +148,11 @@ export const updatehospStaff = async (req, res) => {
         if (!staff || !staff.isActive) {
             return errorResponse(res, STATUS.NOT_FOUND, MESSAGES.HOSP_STAFF.HOSP_STAFF_NOT_FOUND);
         }
+        // ----
+        if (req.user.role !== "admin" && req.user.id !== staff.user_id.toString()) {
+            // Only allow admins or the staff themselves to update
+            return errorResponse(res, STATUS.FORBIDDEN, "Not authorized");
+        }
 
         // Normalize fields (handle empty strings)
         const checkSpecializationId = specialization_id === "" ? null : specialization_id;
@@ -187,7 +192,7 @@ export const updatehospStaff = async (req, res) => {
         const userUpdates = {};
 
 
-        
+
         if (email && email.toLowerCase() !== oldEmail) {
 
             // Email exists validator
@@ -277,7 +282,11 @@ export const deletehospStaff = async (req, res) => {
         staff.deletedAt = new Date();
         await staff.save();
 
-        await userModel.findByIdAndUpdate(staff.user_id, { status: "deactivated" });
+        // Deactivate connected user as well
+        await userModel.findByIdAndUpdate(staff.user_id, {
+            status: "deactivated",
+            isActive: false
+        });
         return successResponse(
             res,
             STATUS.OK,

@@ -52,7 +52,8 @@ export const MESSAGES = {
     EMAIL_AVAILABLE: "Email is available",
     RESET_LINK:"Password reset link sent to email",
     INVALID_EXPIRED:"Invalid or expired token",
-    PASSWORD_RESET:"Password has been reset successfully"
+    PASSWORD_RESET:"Password has been reset successfully",
+    ACCOUNT_DEACTIVATED:"Your account is deactivated. Please contact admin."
   },
   PATIENT: {
     PATIENT_CREATED: "Patient  Created Succesfully",
@@ -66,7 +67,8 @@ export const MESSAGES = {
     PATIENT_DELETED: "Patient  deleted Successfully",
     PATIENT_NAME_LONG: "patient name is too long",
     INVALID_CHARACTERS: "Invalid characters",
-    PATIENT_ID_DELETED: "Patient is deleted"
+    PATIENT_ID_DELETED: "Patient is deleted",
+    CANNOT_DELETE_PATIENT:"Patient has active appointments. Please cancel them before deleting."
 
   },
   PATIENT_DETAILS: {

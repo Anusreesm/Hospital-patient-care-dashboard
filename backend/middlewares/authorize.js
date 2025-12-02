@@ -9,7 +9,7 @@ import { errorResponse } from "../constants/response.js";
 export const authMiddleware = async (req, res, next) => {
   try {
     let token;
-    console.log(req.headers.authorization)
+    
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
@@ -24,7 +24,7 @@ export const authMiddleware = async (req, res, next) => {
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.SECRET_KEY);
-      console.log(decoded)
+    
     } catch (error) {
       return errorResponse(res, STATUS.UNAUTHORIZED, MESSAGES.AUTH.INVALID_TOKEN);
     }
