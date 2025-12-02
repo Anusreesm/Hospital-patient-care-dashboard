@@ -15,8 +15,8 @@ console.log("APP_PW length:", process.env.APP_PW?.length); // Should be 16
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             // port: 587,
-            port: 465,
-            secure: true, // SSL
+            port: 587,
+            secure: false, // STARTTLS
             auth: {
                 user: process.env.USER_EMAIL,
                 pass: process.env.APP_PW
