@@ -8,7 +8,7 @@ import { EmailCheck } from "../../../api/AuthApi"
 import { useAuth } from "../../../Context/AuthContext"
 import { registerPatient, updatePatient } from "../../../api/PatientApi"
 import { useTheme } from "../../../Context/ThemeContext"
-
+import { toast as notify, ToastContainer } from 'react-toastify';
 const PatientCreate = ({ mode = "create", existingPatient = null, onClose, onRefresh }) => {
     const { userId } = useAuth()
     const { theme } = useTheme();
@@ -213,8 +213,19 @@ const PatientCreate = ({ mode = "create", existingPatient = null, onClose, onRef
                     return;
                 }
 
-                toast.success("Patient created successfully");
-                // reset form
+                if (result.success) {
+                    const successMsg = mode === "create"
+                        ? (
+                            <div>
+                                patient created successfully!<br />
+                                Temp Password: {result.data.tempPassword}
+                            </div>
+                        )
+                        : "patient updated successfully!";
+
+                    notify.success(successMsg, { autoClose: false }); // stays until manually closed
+
+                     // reset form
                 setFormData({
                     fullName: "",
                     phone: "",
@@ -237,6 +248,14 @@ const PatientCreate = ({ mode = "create", existingPatient = null, onClose, onRef
                 });
                 onClose?.();
                 return;
+
+
+                } else {
+                    
+                    notify.error(result.message || "Something went wrong", { autoClose: 5000 });
+                }
+            
+             
             }
 
             if (mode === "update") {

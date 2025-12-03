@@ -133,7 +133,10 @@ return (
             </div>
         </div>
 
-        <Button type="submit" className={`mt-8 ${theme === "dark" ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-blue-500 text-white hover:bg-blue-600"}`}>
+        <Button type="submit" className={`mt-8 ${theme === "dark"
+                    ? "!bg-blue-600 hover:!bg-blue-500 !text-white"
+                    : "!bg-blue-500 hover:!bg-blue-400 !text-white"
+                }`}>
             {mode === "create" ? "Add User" : "Save Changes"}
         </Button>
     </form>

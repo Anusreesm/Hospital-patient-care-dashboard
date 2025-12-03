@@ -9,6 +9,7 @@ import toast from "react-hot-toast"
 import HospStaffForm from "./HospStaffForm"
 import { EmailCheck } from "../../../api/AuthApi"
 import { useTheme } from "../../../Context/ThemeContext"
+import { toast as notify, ToastContainer } from 'react-toastify';
 
 const HospStaffReg = ({ mode = "create", existingStaff = null, onClose }) => {
     const [departments, setDepartments] = useState([]);
@@ -215,13 +216,20 @@ const HospStaffReg = ({ mode = "create", existingStaff = null, onClose }) => {
             // Handle backend response properly
             if (result.success) {
                 const successMsg = mode === "create"
-                    ? `User created successfully!\nRole: ${result.data.role}\nTemp Password: ${result.data.tempPassword}`
+                    ? (
+                        <div>
+                            User created successfully!<br />
+                            Role: {result.data.role}<br />
+                            Temp Password: {result.data.tempPassword}
+                        </div>
+                    )
                     : "User updated successfully!";
-                toast.success(successMsg);
+
+                notify.success(successMsg, { autoClose: false }); // stays until manually closed
                 onClose?.(true);
             } else {
                 // Show backend error message (like duplicate email)
-                toast.error(result.message || "Something went wrong");
+                notify.error(result.message || "Something went wrong", { autoClose: 5000 });
             }
 
         } catch (err) {

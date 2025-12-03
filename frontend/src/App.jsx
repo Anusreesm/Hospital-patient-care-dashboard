@@ -34,15 +34,20 @@ import BloodStockAdj from './Pages/Settings/BloodStockAdj'
 import ChangeUserPassword from './Pages/Common/Profile/ChangeUserPassword'
 import ForgotPassword from './Pages/Auth/ForgotPassword'
 import ResetPassword from './Pages/Auth/ResetPassword'
+import { ToastContainer } from 'react-toastify'
 
 const App = () => {
   const { token, userRole } = useAuth();
   return (
     <div className="min-h-screen bg-white text-black dark:bg-gray-900 dark:text-white transition-colors duration-300">
       <BrowserRouter>
-        {/* Toaster should be here */}
-        <Toaster
+        {/* Toaster  */}
+         <Toaster
           position="top-center"
+          reverseOrder={false}
+        />
+        <ToastContainer
+        position="top-center"
           reverseOrder={false}
         />
         {/* =======================
