@@ -5,6 +5,7 @@ import { useAuth } from "../../Context/AuthContext";
 import { GetAllAppointment } from "../../api/AppointmentApi";
 import { GetAllPayments } from "../../api/PaymentApi";
 import ProfileForm from "../Common/Profile/ProfileForm";
+import { formatToDDMMYYYY } from "../../Utils/dataFormatter";
 
 const PatientDashboard = () => {
     const { userName, user } = useAuth();
@@ -143,7 +144,8 @@ const PatientDashboard = () => {
                                             </p>
 
                                             <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                {new Date(app.date).toLocaleDateString()} — {app.time}
+                                                {/* {new Date(app.date).toLocaleDateString()} — {app.time} */}
+                                                 {formatToDDMMYYYY(app.date)} — {app.time}
                                             </p>
 
                                             <p className="text-xs text-gray-400">
