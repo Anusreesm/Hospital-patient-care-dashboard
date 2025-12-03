@@ -87,7 +87,19 @@ const AppointmentManagement = () => {
     useEffect(() => {
         if (filterStatus === "All Appointments") {
             setFilteredAppointment(appointment);
-        } else {
+        } 
+         else if (filterStatus === "today") {
+            const todayStr = new Date().toISOString().split("T")[0];
+
+            const todayApps = appointment.filter(a => {
+                const dateStr = new Date(a.date).toISOString().split("T")[0];
+                return dateStr === todayStr;
+            });
+
+            setFilteredAppointment(todayApps);
+
+        }
+        else {
             setFilteredAppointment(appointment.filter(a => a.status === filterStatus));
         }
     }, [filterStatus, appointment]);
@@ -149,6 +161,7 @@ const AppointmentManagement = () => {
                                     onChange={(e) => setFilterStatus(e.target.value)}
                                 >
                                     <option>All Appointments</option>
+                                     <option value="today">Today</option>
                                     <option value="scheduled">Scheduled</option>
                                     <option value="confirmed">Confirmed</option>
                                     <option value="completed">Discharged</option>
