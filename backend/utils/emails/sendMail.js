@@ -17,7 +17,7 @@ const SendMail = async (toEmail, { subject, text, html }) => {
        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
         // Mail options
-        const mailOptions = {
+        const message = {
             from: `"MedTech" <${process.env.FROM_EMAIL}>`,
             to: toEmail,
             subject,
@@ -26,8 +26,11 @@ const SendMail = async (toEmail, { subject, text, html }) => {
         };
 
         // Send mail and await response
-    const response = await sgMail.send(mailOptions);
-    console.log("SendGrid Email Sent:", response[0].statusCode);
+  const response = await sgMail.send(message);
+
+    console.log("Email sent...");
+    console.log("Status:", response[0].statusCode);
+
     return response;
             
     } catch (error) {
