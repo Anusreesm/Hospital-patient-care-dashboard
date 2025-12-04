@@ -21,7 +21,6 @@ const hospitalStaffSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-       match: [/^\d{10}$/, 'Phone number must be 10 digits']
     },
 
     medical_license: {
@@ -30,7 +29,6 @@ const hospitalStaffSchema = new mongoose.Schema(
     exp_years: {
       type: Number,
       required: true,
-      min: 0, max: 100
 
     },
     specialization_id: {
