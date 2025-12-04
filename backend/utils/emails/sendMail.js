@@ -17,7 +17,8 @@ const transporter=nodemailer.createTransport({
 
 const SendMail = async (toEmail, { subject, text, html }) => {
     try {
-        console.log(process.env.USER_EMAIL)
+        console.log("useremail",process.env.USER_EMAIL)
+        console.log("from email",process.env.EMAIL_FROM)
          transporter.sendMail({
             from: process.env.EMAIL_FROM,
             to: toEmail,
