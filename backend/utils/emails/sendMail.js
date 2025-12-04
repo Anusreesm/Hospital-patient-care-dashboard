@@ -18,7 +18,7 @@ const transporter=nodemailer.createTransport({
 const SendMail = async (toEmail, { subject, text, html }) => {
     try {
         await transporter.sendMail({
-            from: `"MedTech" <${process.env.EMAIL_FROM}>`,
+            from: process.env.EMAIL_FROM,
             to: toEmail,
             subject,
             text,

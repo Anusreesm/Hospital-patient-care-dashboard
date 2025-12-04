@@ -23,7 +23,7 @@ export const registerUser = async (req, res) => {
             return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.USER.EMAIL_EXISTS);
         }
         // to create User
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 8);
         const newUser = await userModel.create({
             email,
             password: hashedPassword,
