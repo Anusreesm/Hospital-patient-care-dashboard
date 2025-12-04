@@ -1,4 +1,4 @@
-const API_URL = "https://hospital-patient-care-dashboard-ve5d.onrender.com/api/bloodBankDonor";
+const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/api/bloodBankDonor";
 
 //create donor
 export const CreateDonor = async (data) => {

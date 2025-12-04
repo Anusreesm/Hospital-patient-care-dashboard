@@ -1,5 +1,5 @@
 
-const API_URL = "https://hospital-patient-care-dashboard-ve5d.onrender.com/api/specializationMaster";
+const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/api/specializationMaster";
 
 
 export const AddSpecializations = async ({ spec_name }) => {

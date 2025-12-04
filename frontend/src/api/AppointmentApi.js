@@ -1,5 +1,5 @@
-// const API_URL = "https://hospital-patient-care-dashboard-ve5d.onrender.com/api/appointment";
-const API_URL = "https://hospital-patient-care-dashboard-ve5d.onrender.com/api/appointment";
+// const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/api/appointment";
+const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/api/appointment";
 
 export const BookAppointment = async (data) => {
   try {
