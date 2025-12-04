@@ -1,4 +1,4 @@
-const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/api/payment";
+const API_URL = "https://hospital-patient-care-dashboard-ve5d.onrender.com/api/payment";
 
 export const createPayment = async (data) => {
   try {

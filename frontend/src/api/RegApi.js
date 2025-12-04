@@ -1,4 +1,4 @@
-const API_URL = "https://hospital-patient-care-dashboard-backend.onrender.com/api/registration";
+const API_URL = "https://hospital-patient-care-dashboard-ve5d.onrender.com/api/registration";
 
 export const GetAllReg = async () => {
     try {
