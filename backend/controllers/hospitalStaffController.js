@@ -61,14 +61,12 @@ export const registerhospStaff = async (req, res) => {
         // sending email and displaying email is on emailcontent
         // await SendMail(email, emailContent);
         if (email) {
-            try {
-                const emailContent = EmailTempForTempPw({ toEmail: email, tempPassword, role, name });
-                await SendMail(email, emailContent);
-                console.log("Email sent to:", email);
-            } catch (err) {
-                console.error("Email sending failed:", err);
-            }
+            const emailContent = EmailTempForTempPw({ toEmail: email, tempPassword, role, name });
+            SendMail(email, emailContent)  
+                .then(() => console.log("Email sent to:", email))
+                .catch(err => console.error("Email failed:", err));
         }
+
 
         return successResponse(
             res,
