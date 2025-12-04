@@ -4,7 +4,7 @@ import userModel from "../models/User.js";
 
 const createUserWithTempPw=async (email, role, name)=>{
  const tempPassword = crypto.randomBytes(4).toString("hex");
-    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+    const hashedPassword = await bcrypt.hash(tempPassword, 8);
 
     const newUser = await userModel.create({
         name,
