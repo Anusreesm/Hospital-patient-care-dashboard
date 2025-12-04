@@ -25,7 +25,7 @@ const app = express()
 app.use(
   cors({
     origin: [
-      "https://hospital-patient-care-dashboard.vercel.app"
+     process.env.CLIENT_URL
       
     ],
     methods: ["GET","POST","DELETE","PATCH","PUT"],
