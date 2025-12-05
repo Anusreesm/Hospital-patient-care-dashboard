@@ -57,6 +57,6 @@ const userSchema = new mongoose.Schema(
         timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
     }
 );
- userSchema.index({ email: 1 });
+
 const userModel = mongoose.model("User", userSchema)
 export default userModel
