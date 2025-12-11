@@ -92,8 +92,8 @@ const Sidebar = () => {
                 </li>
               )}
 
-              {(userRole === "admin" || userRole === "staff" ||
-                userRole === "doctor") && (
+              {(userRole === "admin" || userRole === "staff" || userRole === "doctor") && (
+                <>
                   <li>
                     <NavLink
                       to="/patientManagement"
@@ -103,7 +103,15 @@ const Sidebar = () => {
                       Patient Management
                     </NavLink>
                   </li>
-                )}
+                  <li>
+                    <NavLink to='/bloodBankManagement'
+                      className="block py-2 px-3 rounded hover:bg-blue-100 dark:hover:bg-gray-700 transition-colors"
+                      onClick={() => setIsOpen(false)}>
+                      BloodBank Management
+                    </NavLink>
+                  </li>
+                </>
+              )}
 
               {(userRole === "admin" ||
                 userRole === "staff" ||
@@ -122,7 +130,7 @@ const Sidebar = () => {
 
               <li>
                 <NavLink
-                 to={`/${userRole}/settings`}
+                  to={`/${userRole}/settings`}
                   onClick={() => setIsOpen(false)}
                   className="block py-2 px-3 rounded hover:bg-blue-100 dark:hover:bg-gray-700"
                 >
@@ -196,9 +204,9 @@ const Sidebar = () => {
                   </li>
                 )}
 
-                <li>
+              <li>
                 <NavLink
-                   to={`/${userRole}/settings`}
+                  to={`/${userRole}/settings`}
                   className="block py-2 px-3 rounded hover:bg-blue-100 dark:hover:bg-gray-700"
                 >
                   Settings

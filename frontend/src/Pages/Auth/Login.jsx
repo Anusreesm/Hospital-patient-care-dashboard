@@ -19,24 +19,24 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-
+        const wakeToast = toast.loading("Connecting to server...\nRender free-tier server may take a few seconds to wake up.");
         try {
             const result = await LoginUser({ email, password })
-             if (!result.success) {
-            const msg = result?.message?.toLowerCase() || "";
+            toast.dismiss(wakeToast);
+            if (!result.success) {
+                const msg = result?.message?.toLowerCase() || "";
 
-            if (msg.includes("inactive") || msg.includes("deactivated")) {
-                toast.error("Your account is deactivated. Contact admin.");
-            } 
-            else if (msg.includes("not found")) {
-                toast.error("User not found.");
+                if (msg.includes("inactive") || msg.includes("deactivated")) {
+                    toast.error("Your account is deactivated. Contact admin.");
+                }
+                else if (msg.includes("not found")) {
+                    toast.error("User not found.");
+                }
+                else {
+                    toast.error("Invalid credentials");
+                }
+                return;
             }
-            else {
-                toast.error("Invalid credentials");
-            }
-return;
-        }
             if (result.success) {
                 // it is passed to AuthContext-passed as an object
                 LoginHandler(
@@ -116,23 +116,6 @@ return;
 
                     </form>
 
-                    {/* <div className="max-w-sm mx-auto bg-white rounded-lg shadow-md border border-gray-200 p-6 mt-8">
-                        <h4 className="text-lg font-semibold text-gray-800 mb-4">Demo Credentials</h4>
-                        <ul className="space-y-2">
-                            {/* <li className="text-gray-700">
-                                <span className="font-medium">Admin:</span> admin@gmail.com / admin
-                            </li> */}
-                            {/* <li className="text-gray-700">
-                                <span className="font-medium">Staff:</span> staff@gmail.com / demo123
-                            </li>
-                            <li className="text-gray-700">
-                                <span className="font-medium">Patient:</span> patient@gmail.com / demo123
-                            </li>
-                            <li className="text-gray-700">
-                                <span className="font-medium">Doctor:</span> doctor@gmail.com / demo123
-                            </li>
-                        </ul>
-                    </div> */} 
 
                 </div>
             </div>
