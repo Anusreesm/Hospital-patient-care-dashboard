@@ -19,10 +19,17 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const wakeToast = toast.loading("Connecting to server...\nRender free-tier server may take a few seconds to wake up.");
+        let wakeToast;
+        // Only show toast if backend is slow
+        const timeout = setTimeout(() => {
+            wakeToast = toast.loading("..Connecting to server...\nRender free-tier server may take a few seconds to wake up.");
+        }, 1000);
         try {
             const result = await LoginUser({ email, password })
-            toast.dismiss(wakeToast);
+
+            clearTimeout(timeout);
+            if (wakeToast) toast.dismiss(wakeToast);
+            
             if (!result.success) {
                 const msg = result?.message?.toLowerCase() || "";
 
