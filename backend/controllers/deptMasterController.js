@@ -5,6 +5,7 @@ import { MESSAGES } from "../constants/messages.js"
 import { errorResponse, successResponse } from "../constants/response.js";
 import deptModel from "../models/DepartmentMaster.js";
 
+
 // @desc    create new dept
 // @route   POST/api/deptMaster/create
 // @access Admin/staff 
@@ -14,6 +15,7 @@ export const createDept = async (req, res) => {
         if (!dept_name || !dept_name.trim()) {
             return errorResponse(res, STATUS.BAD_REQUEST, MESSAGES.DEPARTMENT.DEPT_NAME_REQUIRED);
         }
+         
         //  to check if department already exist
         const existing_Dept = await deptModel.findOne({ dept_name: { $regex: `^${dept_name.trim()}$`, $options: "i" } });
         if (existing_Dept) {
